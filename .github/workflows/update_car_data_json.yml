@@ -7,6 +7,8 @@ on:
     paths:
       - 'opendbc/car/**/values.py'
       - 'opendbc/car/docs_definitions.py'
+    branches:
+      - '1-opendbc'
   workflow_dispatch:
 
 jobs:
@@ -18,6 +20,8 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: '1-opendbc'
       
       - name: Configure git
         run: git config --global --add safe.directory '*'
@@ -44,4 +48,4 @@ jobs:
           destination_branch: 'main'
           user_email: 'github-actions@github.com'
           user_name: 'GitHub Actions'
-          commit_message: 'update: car docs data JSON'
+          commit_message: 'update: car docs data JSON from opendbc 1-opendbc branch'
