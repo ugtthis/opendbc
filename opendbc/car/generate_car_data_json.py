@@ -1,11 +1,15 @@
 import json
 import os
 from typing import Any
+from enum import Enum
 
 from opendbc.car.docs import get_car_docs_with_extras, get_all_footnotes, Column, CarDocs
 from opendbc.car.docs_definitions import Star
 
-def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[Any, str]) -> list[dict[str, Any]]:
+def get_star_value(value: Star | str) -> Any:
+    return value.value if isinstance(value, Star) else value
+
+def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[Enum, str]) -> list[dict[str, Any]]:
     car_data = []
     for car in car_docs:
         car_dict = {
@@ -32,8 +36,8 @@ def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[Any, s
             "longitudinal": car.row[Column.LONGITUDINAL],
             "fsr_longitudinal": car.row[Column.FSR_LONGITUDINAL],
             "fsr_steering": car.row[Column.FSR_STEERING],
-            "steering_torque": car.row[Column.STEERING_TORQUE].value if isinstance(car.row[Column.STEERING_TORQUE], Star) else car.row[Column.STEERING_TORQUE],
-            "auto_resume_star": car.row[Column.AUTO_RESUME].value if isinstance(car.row[Column.AUTO_RESUME], Star) else car.row[Column.AUTO_RESUME],
+            "steering_torque": get_star_value(car.row[Column.STEERING_TORQUE]),
+            "auto_resume_star": get_star_value(car.row[Column.AUTO_RESUME]),
             "hardware": car.row[Column.HARDWARE],
             "video": car.row[Column.VIDEO],
         }
@@ -49,7 +53,7 @@ def generate_car_data_json(output_path: str) -> None:
 
         car_data = convert_car_docs_to_json(all_cars, all_footnotes)
 
-        with open(output_path, 'w') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(car_data, f, indent=2)
     except Exception as e:
         raise RuntimeError(f"Failed to generate car documentation JSON: {str(e)}") from e
