@@ -1,0 +1,47 @@
+name: Update JSON Car Documentation
+
+on:
+  schedule:
+    - cron: "0 16 1 * *"  # Run at 16:00 UTC on the 1st of every month
+  push:
+    paths:
+      - 'opendbc/car/**/values.py'
+      - 'opendbc/car/docs_definitions.py'
+  workflow_dispatch:
+
+jobs:
+  update-car-data-json:
+    name: Update car data JSON
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/commaai/opendbc:latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure git
+        run: git config --global --add safe.directory '*'
+      
+      - name: Generate and validate JSON car data
+        run: |
+          python opendbc/car/generate_car_data_json.py
+          python -c "import json; json.load(open('car_data.json'))"
+          
+          file_size=$(stat -f%z car_data.json)
+          if [ $file_size -lt 1000 ]; then
+            echo "Warning: JSON file seems too small"
+            exit 1
+          fi
+      
+      - name: Push to opendbc-site repo
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: 'car_data.json'
+          destination_repo: 'ugtthis/opendbc-site'
+          destination_folder: 'src/data'
+          destination_branch: 'main'
+          user_email: 'github-actions@github.com'
+          user_name: 'GitHub Actions'
+          commit_message: 'update: car docs data JSON'
