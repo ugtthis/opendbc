@@ -9,7 +9,7 @@ from opendbc.car.docs_definitions import Star
 def get_star_value(value: Star | str) -> Any:
     return value.value if isinstance(value, Star) else value
 
-def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[Enum, str]) -> list[dict[str, Any]]:
+def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[Enum, int]) -> list[dict[str, Any]]:
     car_data = []
     for car in car_docs:
         car_dict = {
@@ -21,7 +21,7 @@ def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[Enum, 
             "package": car.package,
             "requirements": car.requirements,
             "video_link": car.video_link,
-            "footnotes": [all_footnotes[fn] for fn in car.footnotes],
+            "footnotes": [str(all_footnotes[fn]) for fn in car.footnotes],
             "min_steer_speed": car.min_steer_speed,
             "min_enable_speed": car.min_enable_speed,
             "auto_resume": car.auto_resume,
