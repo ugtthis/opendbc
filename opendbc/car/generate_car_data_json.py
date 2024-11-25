@@ -5,7 +5,7 @@ from typing import Any
 from opendbc.car.docs import get_car_docs_with_extras, get_all_footnotes, Column, CarDocs
 from opendbc.car.docs_definitions import Star
 
-def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[str, str]) -> list[dict[str, Any]]:
+def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[Any, str]) -> list[dict[str, Any]]:
     car_data = []
     for car in car_docs:
         car_dict = {
