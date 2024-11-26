@@ -3,12 +3,7 @@ import os
 from typing import Any
 from enum import Enum
 
-from opendbc.car.docs import (
-    get_all_footnotes,
-    Column,
-    CarDocs,
-    ExtraCarDocs,
-)
+from opendbc.car.docs import get_all_footnotes, Column, CarDocs, ExtraCarDocs
 from opendbc.car.docs_definitions import Star, get_car_docs_with_extras
 
 def get_star_value(value: Star | str) -> Any:
