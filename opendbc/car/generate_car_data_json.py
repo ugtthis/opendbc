@@ -3,13 +3,19 @@ import os
 from typing import Any
 from enum import Enum
 
-from opendbc.car.docs import get_car_docs_with_extras, get_all_footnotes, Column, CarDocs
+from opendbc.car.docs import (
+    get_car_docs_with_extras,
+    get_all_footnotes,
+    Column,
+    CarDocs,
+    ExtraCarDocs,
+)
 from opendbc.car.docs_definitions import Star
 
 def get_star_value(value: Star | str) -> Any:
     return value.value if isinstance(value, Star) else value
 
-def convert_car_docs_to_json(car_docs: list[CarDocs], all_footnotes: dict[Enum, int]) -> list[dict[str, Any]]:
+def convert_car_docs_to_json(car_docs: list[CarDocs | ExtraCarDocs], all_footnotes: dict[Enum, int]) -> list[dict[str, Any]]:
     car_data = []
     for car in car_docs:
         car_dict = {
