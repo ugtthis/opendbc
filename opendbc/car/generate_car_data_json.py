@@ -3,8 +3,8 @@ import os
 from typing import Any
 from enum import Enum
 
-from opendbc.car.docs import get_all_footnotes
-from opendbc.car.docs_definitions import Star, Column, CarDocs, ExtraCarDocs, get_car_docs_with_extras
+from opendbc.car.docs import get_all_footnotes, get_car_docs_with_extras
+from opendbc.car.docs_definitions import Star, Column, CarDocs, ExtraCarDocs
 
 def get_star_value(value: Star | str) -> Any:
     return value.value if isinstance(value, Star) else value
