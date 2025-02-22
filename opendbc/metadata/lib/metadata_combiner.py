@@ -10,9 +10,7 @@ from opendbc.car.car_helpers import interfaces, get_interface_attr
 from opendbc.car.values import Platform, PLATFORMS
 from opendbc.car.mock.values import CAR as MOCK
 from opendbc.car.extra_cars import CAR as EXTRA
-from opendbc.metadata.lib.definitions import (
-    CarDocs, ExtraCarDocs, CommonFootnote
-)
+from opendbc.metadata.lib.definitions import CarDocs, ExtraCarDocs, CommonFootnote
 
 # Platform definitions for documentation
 ExtraPlatform = Platform | EXTRA

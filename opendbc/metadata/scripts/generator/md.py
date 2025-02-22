@@ -7,17 +7,9 @@ from collections import defaultdict
 from natsort import natsorted
 
 from opendbc.car.common.basedir import BASEDIR
-from opendbc.metadata.lib.definitions import (
-    CarDocs, Device, ExtraCarDocs, Column, 
-    ExtraCarsColumn, PartType
-)
-from opendbc.metadata.lib.metadata_combiner import (
-    get_car_docs_with_extras,
-    get_all_footnotes,
-    group_by_make
-)
+from opendbc.metadata.lib.definitions import CarDocs, Device, ExtraCarDocs, Column, ExtraCarsColumn, PartType
+from opendbc.metadata.lib.metadata_combiner import get_car_docs_with_extras, get_all_footnotes, group_by_make
 
-# Update paths to use metadata templates
 METADATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 EXTRA_CARS_MD_OUT = os.path.join(BASEDIR, "../", "../", "docs", "CARS_TEST.md")
 EXTRA_CARS_MD_TEMPLATE = os.path.join(METADATA_DIR, "templates", "CARS_template.md")
