@@ -25,3 +25,8 @@ opendbc/can/parser_pyx.cpp
 opendbc/can/packer_pyx.html
 opendbc/can/parser_pyx.html
 opendbc/dbc/*_generated.dbc
+
+/scripts/venv
+/venv
+all_cars_with_extras.json
+all_cars.json
