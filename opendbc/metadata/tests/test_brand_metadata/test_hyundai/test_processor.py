@@ -2,8 +2,8 @@
 
 import pytest
 from opendbc.metadata.base.processor import ModelData
-from opendbc.metadata.brand_metadata.hyundai.processor import HyundaiProcessor
-from opendbc.car.hyundai.values import Footnote as HyundaiFootnote, HyundaiFlags
+from opendbc.metadata.brand_metadata.hyundai.processor import HyundaiProcessor, HyundaiPartProcessor
+from opendbc.car.hyundai.values import Footnote as HyundaiFootnote, HyundaiFlags, CAR, HyundaiPlatformConfig
 
 def test_hyundai_processor_initialization():
     """Test initializing the Hyundai processor."""
@@ -112,4 +112,122 @@ def test_process_nonexistent_model():
     result = processor.process_model("nonexistent")
     assert result is None
     assert processor.get_parts("nonexistent") is None
-    assert processor.get_footnotes("nonexistent") is None 
+    assert processor.get_footnotes("nonexistent") is None
+
+def test_hyundai_parts_exact_match():
+    """Test that parts EXACTLY match values.py configurations."""
+    processor = HyundaiPartProcessor()
+    
+    # Test every car in values.py
+    for car in CAR:
+        if not isinstance(car.config, HyundaiPlatformConfig):
+            continue
+            
+        parts = processor.get_parts_for_platform(car.config)
+        
+        # Verify harness matches flags and model
+        if car.config.flags & HyundaiFlags.CANFD:
+            if "IONIQ_6" in car.name and "HDA II" in car.config.car_docs[0].package:
+                assert processor.HARNESS_P in parts.required_parts, \
+                    f"{car} should use Harness P"
+            elif "IONIQ_5" in car.name and "HDA II" in car.config.car_docs[0].package:
+                assert processor.HARNESS_Q in parts.required_parts, \
+                    f"{car} should use Harness Q"
+            elif "TUCSON" in car.name or "SANTA_CRUZ" in car.name:
+                assert processor.HARNESS_N in parts.required_parts, \
+                    f"{car} should use Harness N"
+            elif "GENESIS" in car.name or "STARIA" in car.name:
+                assert processor.HARNESS_K in parts.required_parts, \
+                    f"{car} should use Harness K"
+            else:
+                assert processor.HARNESS_L in parts.required_parts, \
+                    f"{car} should use Harness L"
+        elif car.config.flags & HyundaiFlags.LEGACY:
+            assert processor.HARNESS_E in parts.required_parts, \
+                f"{car} should use Harness E"
+        elif car.config.flags & HyundaiFlags.UNSUPPORTED_LONGITUDINAL:
+            assert processor.HARNESS_G in parts.required_parts, \
+                f"{car} should use Harness G"
+        elif car.name == "HYUNDAI_SONATA_HYBRID":
+            # Special case: Sonata Hybrid uses Harness A despite having MANDO_RADAR and HYBRID flags
+            assert processor.HARNESS_A in parts.required_parts, \
+                f"{car} should use Harness A"
+        elif "KONA" in car.name and any(year in car.config.car_docs[0].name for year in ["2022", "2023"]):
+            # Special case: All 2022-23 Kona models (including EV) use Harness O
+            assert processor.HARNESS_O in parts.required_parts, \
+                f"{car} should use Harness O"
+        elif car.name == "HYUNDAI_KONA_HEV":
+            # Special case: Kona Hybrid 2020 uses Harness I
+            assert processor.HARNESS_I in parts.required_parts, \
+                f"{car} should use Harness I"
+        elif car.config.flags & HyundaiFlags.MANDO_RADAR:
+            assert processor.HARNESS_D in parts.required_parts, \
+                f"{car} should use Harness D"
+        elif car.config.flags & (HyundaiFlags.HYBRID | HyundaiFlags.EV):
+            if "IONIQ" in car.name or "2020" in car.config.car_docs[0].name:
+                assert processor.HARNESS_H in parts.required_parts, \
+                    f"{car} should use Harness H"
+            else:
+                assert processor.HARNESS_C in parts.required_parts, \
+                    f"{car} should use Harness C"
+        elif "GENESIS" in car.name:
+            assert processor.HARNESS_F in parts.required_parts, \
+                f"{car} should use Harness F"
+        else:
+            # Standard SCC models
+            if any(year in car.config.car_docs[0].name for year in ["2020", "2021", "2022", "2023"]):
+                assert processor.HARNESS_A in parts.required_parts, \
+                    f"{car} should use Harness A"
+            else:
+                assert processor.HARNESS_B in parts.required_parts, \
+                    f"{car} should use Harness B"
+        
+        # All should have pry tool
+        assert processor.PRY_TOOL in parts.tools, \
+            f"{car} missing pry tool"
+
+def test_hyundai_specific_models():
+    """Test specific model configurations."""
+    processor = HyundaiPartProcessor()
+    
+    # Test Ioniq 6 with HDA II
+    ioniq6 = next(c for c in CAR if c.name == "HYUNDAI_IONIQ_6")
+    parts = processor.get_parts_for_platform(ioniq6.config)
+    assert processor.HARNESS_P in parts.required_parts
+    
+    # Test Ioniq 5 with HDA II
+    ioniq5 = next(c for c in CAR if "IONIQ_5" in c.name)
+    parts = processor.get_parts_for_platform(ioniq5.config)
+    assert processor.HARNESS_Q in parts.required_parts
+    
+    # Test Tucson 4th gen
+    tucson = next(c for c in CAR if c.name == "HYUNDAI_TUCSON_4TH_GEN")
+    parts = processor.get_parts_for_platform(tucson.config)
+    assert processor.HARNESS_N in parts.required_parts
+    
+    # Test Genesis with CAN FD
+    genesis = next(c for c in CAR if c.name == "GENESIS_GV60_EV_1ST_GEN")
+    parts = processor.get_parts_for_platform(genesis.config)
+    assert processor.HARNESS_K in parts.required_parts
+    
+    # Test Legacy model
+    legacy = next(c for c in CAR if c.name == "HYUNDAI_VELOSTER")
+    parts = processor.get_parts_for_platform(legacy.config)
+    assert processor.HARNESS_E in parts.required_parts
+    
+    # Test Hybrid model (Sonata Hybrid uses Harness A)
+    hybrid = next(c for c in CAR if c.name == "HYUNDAI_SONATA_HYBRID")
+    parts = processor.get_parts_for_platform(hybrid.config)
+    assert processor.HARNESS_A in parts.required_parts
+
+def test_tools_always_included():
+    """Test that required tools are always included."""
+    processor = HyundaiPartProcessor()
+    
+    for car in CAR:
+        if not isinstance(car.config, HyundaiPlatformConfig):
+            continue
+            
+        parts = processor.get_parts_for_platform(car.config)
+        assert processor.PRY_TOOL in parts.tools, \
+            f"{car} missing pry tool" 

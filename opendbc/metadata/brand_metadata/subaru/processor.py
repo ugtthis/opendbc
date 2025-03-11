@@ -11,6 +11,7 @@ from opendbc.metadata.base.processor import BaseProcessor, ModelData
 from opendbc.metadata.base.parts import CarParts, Part, Tool, BrandPartProcessor, PartCategory, PlatformParts
 from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
 from opendbc.metadata.base.constants import COLUMNS
+from opendbc.metadata.base.parts_catalog import PartsCatalog, HarnessId, ToolId, AccessoryId
 from opendbc.car.subaru.values import SubaruFlags, CAR, Footnote as SubaruFootnote
 
 class SubaruProcessor(BaseProcessor):
@@ -24,46 +25,18 @@ class SubaruProcessor(BaseProcessor):
     
     def _initialize_common_parts(self):
         """Initialize common parts used across Subaru models."""
+        # Use the central parts catalog instead of defining parts here
         self.common_parts = {
-            "harness_a": Part(
-                id="subaru_a",
-                name="Subaru A Harness",
-                category=PartCategory.HARNESS,
-                description="For pre-2020 models with torque-based LKAS",
-                url="https://comma.ai/shop/harnesses/subaru-a"
-            ),
-            "harness_b": Part(
-                id="subaru_b",
-                name="Subaru B Harness",
-                category=PartCategory.HARNESS,
-                description="For 2020-22 Outback/Legacy and 2020 Crosstrek Hybrid",
-                url="https://comma.ai/shop/harnesses/subaru-b"
-            ),
-            "harness_c": Part(
-                id="subaru_c",
-                name="Subaru C Harness",
-                category=PartCategory.HARNESS,
-                description="For 2022-24 Forester",
-                url="https://comma.ai/shop/harnesses/subaru-c"
-            ),
-            "harness_d": Part(
-                id="subaru_d",
-                name="Subaru D Harness",
-                category=PartCategory.HARNESS,
-                description="For 2023+ Outback and Ascent with angle-based LKAS",
-                url="https://comma.ai/shop/harnesses/subaru-d"
-            )
+            "harness_a": PartsCatalog.get_harness(HarnessId.SUBARU_A),
+            "harness_b": PartsCatalog.get_harness(HarnessId.SUBARU_B),
+            "harness_c": PartsCatalog.get_harness(HarnessId.SUBARU_C),
+            "harness_d": PartsCatalog.get_harness(HarnessId.SUBARU_D),
         }
         
+        # Common tools for all Subaru models
         self.common_tools = [
-            Tool(
-                name="Socket 8mm Deep",
-                description="For removing steering column covers"
-            ),
-            Tool(
-                name="Trim Removal Tool",
-                description="For removing trim pieces"
-            )
+            PartsCatalog.get_tool(ToolId.SOCKET_8MM_DEEP),
+            PartsCatalog.get_tool(ToolId.PRY_TOOL)
         ]
     
     def _initialize_common_footnotes(self):

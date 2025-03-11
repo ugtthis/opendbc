@@ -1,3 +1,5 @@
+"""Tests for the constants module."""
+
 import pytest
 
 def test_columns_structure():

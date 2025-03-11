@@ -1,16 +1,20 @@
 """Tests for the parts module."""
 
 import pytest
-from opendbc.metadata.base.parts import Part, Tool, CarParts
+from opendbc.metadata.base.parts import Part, Tool, CarParts, PartCategory
 
 def test_part_creation():
     """Test creating a Part instance."""
     part = Part(
+        id="test_part",
         name="Test Part",
+        category=PartCategory.ACCESSORY,
         description="A test part",
         url="https://example.com/part"
     )
+    assert part.id == "test_part"
     assert part.name == "Test Part"
+    assert part.category == PartCategory.ACCESSORY
     assert part.description == "A test part"
     assert part.url == "https://example.com/part"
 
@@ -28,8 +32,8 @@ def test_tool_creation():
 def test_car_parts_creation():
     """Test creating a CarParts instance."""
     parts = [
-        Part("Part 1", "Description 1"),
-        Part("Part 2", "Description 2", "https://example.com/part2")
+        Part(id="part1", name="Part 1", category=PartCategory.ACCESSORY, description="Description 1"),
+        Part(id="part2", name="Part 2", category=PartCategory.ACCESSORY, description="Description 2", url="https://example.com/part2")
     ]
     tools = [
         Tool("Tool 1", "Description 1"),
@@ -47,7 +51,7 @@ def test_car_parts_creation():
 
 def test_car_parts_optional_fields():
     """Test CarParts creation with optional fields."""
-    parts = [Part("Part 1", "Description 1")]
+    parts = [Part(id="part1", name="Part 1", category=PartCategory.ACCESSORY, description="Description 1")]
     tools = [Tool("Tool 1", "Description 1")]
     
     car_parts = CarParts.create(parts=parts, tools=tools)

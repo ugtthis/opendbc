@@ -2,7 +2,7 @@
 
 import pytest
 from opendbc.metadata.base.processor import BaseProcessor, ModelData
-from opendbc.metadata.base.parts import CarParts, Part, Tool
+from opendbc.metadata.base.parts import CarParts, Part, Tool, PartCategory
 from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
 
 def test_model_data_creation():
@@ -72,7 +72,7 @@ def test_get_parts():
     """Test getting parts for a model."""
     processor = BaseProcessor()
     parts = CarParts.create(
-        parts=[Part("Test Part", "Description")],
+        parts=[Part(id="test_part", name="Test Part", category=PartCategory.ACCESSORY, description="Description")],
         tools=[Tool("Test Tool", "Description")]
     )
     processor.parts_data["test_model"] = parts
