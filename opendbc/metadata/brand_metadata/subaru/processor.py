@@ -8,7 +8,7 @@ including platform configurations, parts, and footnotes.
 from typing import Dict, List, Optional
 
 from opendbc.metadata.base.processor import BaseProcessor, ModelData
-from opendbc.metadata.base.parts import CarParts, Part, Tool
+from opendbc.metadata.base.parts import CarParts, Part, Tool, BrandPartProcessor, PartCategory, PlatformParts
 from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
 from opendbc.metadata.base.constants import COLUMNS
 from opendbc.car.subaru.values import SubaruFlags, CAR, Footnote as SubaruFootnote
@@ -26,22 +26,30 @@ class SubaruProcessor(BaseProcessor):
         """Initialize common parts used across Subaru models."""
         self.common_parts = {
             "harness_a": Part(
+                id="subaru_a",
                 name="Subaru A Harness",
+                category=PartCategory.HARNESS,
                 description="For pre-2020 models with torque-based LKAS",
                 url="https://comma.ai/shop/harnesses/subaru-a"
             ),
             "harness_b": Part(
+                id="subaru_b",
                 name="Subaru B Harness",
+                category=PartCategory.HARNESS,
                 description="For 2020-22 Outback/Legacy and 2020 Crosstrek Hybrid",
                 url="https://comma.ai/shop/harnesses/subaru-b"
             ),
             "harness_c": Part(
+                id="subaru_c",
                 name="Subaru C Harness",
+                category=PartCategory.HARNESS,
                 description="For 2022-24 Forester",
                 url="https://comma.ai/shop/harnesses/subaru-c"
             ),
             "harness_d": Part(
+                id="subaru_d",
                 name="Subaru D Harness",
+                category=PartCategory.HARNESS,
                 description="For 2023+ Outback and Ascent with angle-based LKAS",
                 url="https://comma.ai/shop/harnesses/subaru-d"
             )
@@ -152,3 +160,81 @@ class SubaruProcessor(BaseProcessor):
             footnotes["exp_long"] = self.common_footnotes["exp_long"]
             
         return FootnoteCollection.create(footnotes)
+
+class SubaruPartProcessor(BrandPartProcessor):
+    """Processor for determining Subaru parts based on platform flags."""
+    
+    def __init__(self):
+        # Define parts catalog
+        self.HARNESS_A = Part(
+            id="subaru_a",
+            name="Subaru Harness Type A",
+            category=PartCategory.HARNESS,
+            description="For pre-Global platform vehicles"
+        )
+        self.HARNESS_B = Part(
+            id="subaru_b",
+            name="Subaru Harness Type B",
+            category=PartCategory.HARNESS,
+            description="For Global platform vehicles"
+        )
+        self.HARNESS_C = Part(
+            id="subaru_c",
+            name="Subaru Harness Type C",
+            category=PartCategory.HARNESS,
+            description="For 2022+ Forester with LKAS"
+        )
+        self.HARNESS_D = Part(
+            id="subaru_d",
+            name="Subaru Harness Type D",
+            category=PartCategory.HARNESS,
+            description="For 2023+ vehicles with LKAS"
+        )
+        
+        # Tools
+        self.SOCKET_8MM = Part(
+            id="socket_8mm_deep",
+            name="8mm Deep Socket",
+            category=PartCategory.TOOL,
+            description="For removing OBD port cover"
+        )
+        self.PRY_TOOL = Part(
+            id="pry_tool",
+            name="Trim Removal Tool",
+            category=PartCategory.TOOL,
+            description="For removing trim pieces"
+        )
+
+    def get_parts_for_platform(self, platform_config) -> PlatformParts:
+        """Get parts based on platform flags from values.py."""
+        parts = PlatformParts(
+            required_parts=set(),
+            tools={self.SOCKET_8MM, self.PRY_TOOL}  # All Subarus need these
+        )
+
+        # Extract years from car_docs
+        years = []
+        for car_doc in platform_config.car_docs:
+            _, _, year_str = car_doc.name.rpartition(" ")
+            if "-" in year_str:
+                start, end = year_str.split("-")
+                if len(end) == 2:  # Handle two-digit years
+                    end = f"20{end}"
+                years.extend(range(int(start), int(end) + 1))
+            else:
+                years.append(int(year_str))
+
+        # Use existing flags from values.py
+        if platform_config.flags & SubaruFlags.LKAS_ANGLE:
+            # Check if it's a Forester 2022-24
+            is_forester = any("Forester" in doc.name for doc in platform_config.car_docs)
+            if is_forester:
+                parts.required_parts.add(self.HARNESS_C)  # 2022+ Forester
+            else:
+                parts.required_parts.add(self.HARNESS_D)  # 2023+ with angle-based LKAS
+        elif platform_config.flags & SubaruFlags.GLOBAL_GEN2:
+            parts.required_parts.add(self.HARNESS_B)  # 2020-22 Outback/Legacy
+        else:
+            parts.required_parts.add(self.HARNESS_A)  # Pre-2020 models
+
+        return parts

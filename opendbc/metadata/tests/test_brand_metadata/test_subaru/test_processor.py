@@ -3,7 +3,8 @@
 import pytest
 from opendbc.metadata.base.processor import ModelData
 from opendbc.metadata.brand_metadata.subaru.processor import SubaruProcessor
-from opendbc.car.subaru.values import Footnote as SubaruFootnote
+from opendbc.car.subaru.values import Footnote as SubaruFootnote, SubaruFlags, CAR, SubaruPlatformConfig
+from opendbc.metadata.brand_metadata.subaru.processor import SubaruPartProcessor
 
 def test_subaru_processor_initialization():
     """Test initializing the Subaru processor."""
@@ -191,3 +192,70 @@ def test_process_nonexistent_model():
     assert result is None
     assert processor.get_parts("nonexistent") is None
     assert processor.get_footnotes("nonexistent") is None
+
+def test_subaru_parts_exact_match():
+    """Test that parts EXACTLY match values.py configurations."""
+    processor = SubaruPartProcessor()
+    
+    # Test every car in values.py
+    for car in CAR:
+        if not isinstance(car.config, SubaruPlatformConfig):
+            continue
+            
+        parts = processor.get_parts_for_platform(car.config)
+        
+        # Verify harness matches flags
+        if car in [CAR.SUBARU_OUTBACK_2023, CAR.SUBARU_ASCENT_2023]:
+            assert processor.HARNESS_D in parts.required_parts, \
+                f"{car} should use Harness D"
+        elif car == CAR.SUBARU_FORESTER_2022:
+            assert processor.HARNESS_C in parts.required_parts, \
+                f"{car} should use Harness C"
+        elif car.config.flags & SubaruFlags.GLOBAL_GEN2 and not (car.config.flags & SubaruFlags.LKAS_ANGLE):
+            assert processor.HARNESS_B in parts.required_parts, \
+                f"{car} should use Harness B"
+        else:
+            assert processor.HARNESS_A in parts.required_parts, \
+                f"{car} should use Harness A"
+        
+        # All should have tools
+        assert processor.SOCKET_8MM in parts.tools
+        assert processor.PRY_TOOL in parts.tools
+
+def test_subaru_specific_models():
+    """Test specific model configurations."""
+    processor = SubaruPartProcessor()
+    
+    # Test Outback 2023
+    outback = next(c for c in CAR if c.name == "SUBARU_OUTBACK_2023")
+    parts = processor.get_parts_for_platform(outback.config)
+    assert processor.HARNESS_D in parts.required_parts
+    
+    # Test Forester 2022
+    forester = next(c for c in CAR if c.name == "SUBARU_FORESTER_2022")
+    parts = processor.get_parts_for_platform(forester.config)
+    assert processor.HARNESS_C in parts.required_parts
+    
+    # Test Global Platform
+    global_car = next(c for c in CAR if c.name == "SUBARU_OUTBACK")
+    parts = processor.get_parts_for_platform(global_car.config)
+    assert processor.HARNESS_B in parts.required_parts
+    
+    # Test Pre-Global
+    preglobal = next(c for c in CAR if c.name == "SUBARU_FORESTER_PREGLOBAL")
+    parts = processor.get_parts_for_platform(preglobal.config)
+    assert processor.HARNESS_A in parts.required_parts
+
+def test_tools_always_included():
+    """Test that required tools are always included."""
+    processor = SubaruPartProcessor()
+    
+    for car in CAR:
+        if not isinstance(car.config, SubaruPlatformConfig):
+            continue
+            
+        parts = processor.get_parts_for_platform(car.config)
+        assert processor.SOCKET_8MM in parts.tools, \
+            f"{car} missing socket"
+        assert processor.PRY_TOOL in parts.tools, \
+            f"{car} missing pry tool"

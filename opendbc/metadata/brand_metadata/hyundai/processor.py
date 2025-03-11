@@ -5,17 +5,43 @@ This module handles Hyundai vehicle metadata for documentation and UI purposes.
 Focuses on harness selection and relevant footnotes based on model/year.
 """
 
-from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-from metadata.base.processor import BaseProcessor, ModelData
-from metadata.base.parts import Part, CarParts, Tool
-from metadata.base.footnotes import Footnote, FootnoteCollection
-from metadata.base.constants import COLUMNS
-from opendbc.car.hyundai.values import Footnote as HyundaiFootnote
+from opendbc.metadata.base.processor import ModelData
+from opendbc.metadata.base.flag_processor import FlagBasedProcessor, FlagConfig
+from opendbc.metadata.base.parts import Part, CarParts, Tool
+from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
+from opendbc.metadata.base.constants import COLUMNS
+from opendbc.car.hyundai.values import HyundaiFlags, CAR, Footnote as HyundaiFootnote
+
+from dataclasses import dataclass
 
 @dataclass
-class HyundaiProcessor(BaseProcessor):
+class HyundaiProcessor(FlagBasedProcessor):
+    # Define flag configurations
+    FLAGS = HyundaiFlags
+    FLAG_CONFIGS = [
+        FlagConfig(
+            flag_name='MIN_STEER_32_MPH',
+            footnote_key='min_speed',
+            footnote_text='Minimum engage speed applies',
+            footnote_column='FSR_LONGITUDINAL'
+        ),
+        FlagConfig(
+            flag_name='MANDO_RADAR',
+            footnote_key='radar_scc',
+            footnote_text='Uses radar-based Smart Cruise Control',
+            footnote_column='LONGITUDINAL'
+        ),
+        FlagConfig(
+            flag_name='CANFD',
+            footnote_key='canfd',
+            footnote_text=HyundaiFootnote.CANFD.value.text,
+            footnote_column='MODEL',
+            part_required='canfd_kit'
+        ),
+    ]
+
     def __init__(self):
         super().__init__()
         self._initialize_common_parts()
@@ -36,14 +62,34 @@ class HyundaiProcessor(BaseProcessor):
         ]
 
     def _initialize_common_footnotes(self):
-        """Initialize relevant footnotes."""
+        """Initialize common footnotes."""
+        # Base SCC footnote always required
         self.common_footnotes = {
             'scc': Footnote('Requires Smart Cruise Control (SCC)', ['LONGITUDINAL']),
-            'canfd': Footnote(HyundaiFootnote.CANFD.value.text, ['MODEL']),
-            'min_speed': Footnote('Minimum engage speed applies', ['FSR_LONGITUDINAL']),
-            'camera_scc': Footnote('Uses camera-based Smart Cruise Control', ['LONGITUDINAL']),
-            'radar_scc': Footnote('Uses radar-based Smart Cruise Control', ['LONGITUDINAL']),
         }
+
+    def _get_platform_flags(self, model_data: ModelData) -> int:
+        """Get flags for a specific platform from values.py."""
+        platform = getattr(CAR, model_data.platform)
+        return platform.config.flags
+
+    def _get_base_parts(self, model_data: ModelData) -> List[Part]:
+        """Get base harness based on model and year."""
+        model = model_data.model.lower()
+        year = model_data.years[0]  # Use first year for harness selection
+        
+        # Match values.py harness selection exactly
+        if model == 'elantra':
+            if year >= 2021:
+                return [self.common_parts['harness_k']]  # HYUNDAI_ELANTRA_2021
+            elif year == 2019:
+                return [self.common_parts['harness_g']]  # HYUNDAI_ELANTRA
+            elif year <= 2018:
+                return [self.common_parts['harness_b']]  # HYUNDAI_ELANTRA
+        elif model == 'sonata' and year >= 2020:
+            return [self.common_parts['harness_a']]  # HYUNDAI_SONATA
+        
+        return []
 
     def process_model(self, model_id: str) -> Optional[Dict[str, str]]:
         """Process metadata for a specific model."""
