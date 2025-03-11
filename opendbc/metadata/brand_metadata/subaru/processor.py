@@ -73,6 +73,10 @@ class SubaruProcessor(BaseProcessor):
                 text="Uses torque-based Lane Keep Assist System",
                 columns=["STEERING_TORQUE"]
             ),
+            "steer_rate": Footnote(
+                text="Vehicle may temporarily fault when steering angle rate exceeds threshold",
+                columns=["STEERING_TORQUE"]
+            ),
             "global": Footnote(
                 text=SubaruFootnote.GLOBAL.value.text,
                 columns=["PACKAGE"]  # From values.py
@@ -138,6 +142,10 @@ class SubaruProcessor(BaseProcessor):
             footnotes["lkas"] = self.common_footnotes["angle_lkas"]
         else:
             footnotes["lkas"] = self.common_footnotes["torque_lkas"]
+            
+        # Add steering rate limit footnote if applicable
+        if platform_config.flags & SubaruFlags.STEER_RATE_LIMITED:
+            footnotes["steer_rate"] = self.common_footnotes["steer_rate"]
         
         # Add experimental longitudinal control footnote if available
         if hasattr(platform_config, "experimentalLongitudinalAvailable") and platform_config.experimentalLongitudinalAvailable:

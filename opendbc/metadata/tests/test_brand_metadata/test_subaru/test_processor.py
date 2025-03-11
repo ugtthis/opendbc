@@ -24,15 +24,17 @@ def test_subaru_processor_initialization():
     assert "eyesight" in processor.common_footnotes
     assert "angle_lkas" in processor.common_footnotes
     assert "torque_lkas" in processor.common_footnotes
+    assert "steer_rate" in processor.common_footnotes
     assert "global" in processor.common_footnotes
     assert "exp_long" in processor.common_footnotes
     
     # Verify footnote text matches values.py
     assert processor.common_footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
     assert processor.common_footnotes["exp_long"].text == SubaruFootnote.EXP_LONG.value.text
+    assert processor.common_footnotes["steer_rate"].text == "Vehicle may temporarily fault when steering angle rate exceeds threshold"
 
 def test_process_outback_2020():
-    """Test processing a 2020-22 Outback (harness B)."""
+    """Test processing a 2020-22 Outback (harness B, steer rate limited)."""
     processor = SubaruProcessor()
     model_data = ModelData(
         make="Subaru",
@@ -57,8 +59,10 @@ def test_process_outback_2020():
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
     assert "global" in footnotes.footnotes
+    assert "steer_rate" in footnotes.footnotes
     assert footnotes.footnotes["lkas"].text == "Uses torque-based Lane Keep Assist System"
     assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
+    assert footnotes.footnotes["steer_rate"].text == "Vehicle may temporarily fault when steering angle rate exceeds threshold"
 
 def test_process_forester_2022():
     """Test processing a 2022-24 Forester (harness C, angle LKAS)."""
@@ -86,6 +90,7 @@ def test_process_forester_2022():
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
     assert "global" in footnotes.footnotes
+    assert "steer_rate" not in footnotes.footnotes  # Angle-based LKAS doesn't have steer rate limit
     assert footnotes.footnotes["lkas"].text == "Uses angle-based Lane Keep Assist System"
     assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
 
@@ -115,6 +120,7 @@ def test_process_outback_2023():
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
     assert "global" in footnotes.footnotes
+    assert "steer_rate" not in footnotes.footnotes  # Angle-based LKAS doesn't have steer rate limit
     assert footnotes.footnotes["lkas"].text == "Uses angle-based Lane Keep Assist System"
     assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
 
@@ -147,34 +153,36 @@ def test_process_crosstrek_hybrid_2020():
     assert footnotes.footnotes["lkas"].text == "Uses torque-based Lane Keep Assist System"
     assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
 
-def test_process_impreza_2019():
-    """Test processing a 2019 Impreza (harness A)."""
+def test_process_impreza_2020():
+    """Test processing a 2020 Impreza (harness A, steer rate limited)."""
     processor = SubaruProcessor()
     model_data = ModelData(
         make="Subaru",
         model="Impreza",
-        years=[2019],
-        platform="SUBARU_IMPREZA"
+        years=[2020],
+        platform="SUBARU_IMPREZA_2020"
     )
-    processor.model_data["impreza_2019"] = model_data
+    processor.model_data["impreza_2020"] = model_data
     
-    result = processor.process_model("impreza_2019")
+    result = processor.process_model("impreza_2020")
     assert result == model_data
     
     # Check parts
-    parts = processor.get_parts("impreza_2019")
+    parts = processor.get_parts("impreza_2020")
     assert parts is not None
     assert len(parts.parts) == 1
     assert parts.parts[0].name == "Subaru A Harness"
     
     # Check footnotes
-    footnotes = processor.get_footnotes("impreza_2019")
+    footnotes = processor.get_footnotes("impreza_2020")
     assert footnotes is not None
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
     assert "global" in footnotes.footnotes
+    assert "steer_rate" in footnotes.footnotes
     assert footnotes.footnotes["lkas"].text == "Uses torque-based Lane Keep Assist System"
     assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
+    assert footnotes.footnotes["steer_rate"].text == "Vehicle may temporarily fault when steering angle rate exceeds threshold"
 
 def test_process_nonexistent_model():
     """Test processing a nonexistent model."""
