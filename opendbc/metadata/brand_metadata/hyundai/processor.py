@@ -8,16 +8,14 @@ Focuses on harness selection and relevant footnotes based on model/year.
 from typing import Dict, List, Optional, Any
 
 from opendbc.metadata.base.processor import BaseProcessor
-from opendbc.metadata.base.flag_processor import FlagBasedProcessor, FlagConfig
-from opendbc.metadata.base.parts import Part, CarParts, Tool, PartCategory, PlatformParts
+from opendbc.metadata.base.flag_processor import FlagConfig
+from opendbc.metadata.base.parts import Part, CarParts, PartCategory
 from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
 from opendbc.metadata.base.constants import COLUMNS
-from opendbc.metadata.base.parts_catalog import PartsCatalog, HarnessId, ToolId, AccessoryId, KitId
-from opendbc.car.hyundai.values import HyundaiFlags, CAR, Footnote as HyundaiFootnote
+from opendbc.car.hyundai.values import HyundaiFlags, Footnote as HyundaiFootnote
 from opendbc.metadata.brand_metadata.hyundai.attributes import (
     get_model_data, get_visible_models, get_model_by_platform,
-    get_part, get_all_parts_for_model, get_footnote, get_footnotes_for_model,
-    HyundaiHarness, HyundaiTool, HyundaiKit
+    get_all_parts_for_model, get_footnotes_for_model, HyundaiKit
 )
 
 from dataclasses import dataclass
