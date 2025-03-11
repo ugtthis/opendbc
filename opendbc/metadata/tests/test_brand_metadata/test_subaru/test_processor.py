@@ -3,6 +3,7 @@
 import pytest
 from opendbc.metadata.base.processor import ModelData
 from opendbc.metadata.brand_metadata.subaru.processor import SubaruProcessor
+from opendbc.car.subaru.values import Footnote as SubaruFootnote
 
 def test_subaru_processor_initialization():
     """Test initializing the Subaru processor."""
@@ -23,6 +24,12 @@ def test_subaru_processor_initialization():
     assert "eyesight" in processor.common_footnotes
     assert "angle_lkas" in processor.common_footnotes
     assert "torque_lkas" in processor.common_footnotes
+    assert "global" in processor.common_footnotes
+    assert "exp_long" in processor.common_footnotes
+    
+    # Verify footnote text matches values.py
+    assert processor.common_footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
+    assert processor.common_footnotes["exp_long"].text == SubaruFootnote.EXP_LONG.value.text
 
 def test_process_outback_2020():
     """Test processing a 2020-22 Outback (harness B)."""
@@ -49,7 +56,9 @@ def test_process_outback_2020():
     assert footnotes is not None
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
+    assert "global" in footnotes.footnotes
     assert footnotes.footnotes["lkas"].text == "Uses torque-based Lane Keep Assist System"
+    assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
 
 def test_process_forester_2022():
     """Test processing a 2022-24 Forester (harness C, angle LKAS)."""
@@ -76,7 +85,9 @@ def test_process_forester_2022():
     assert footnotes is not None
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
+    assert "global" in footnotes.footnotes
     assert footnotes.footnotes["lkas"].text == "Uses angle-based Lane Keep Assist System"
+    assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
 
 def test_process_outback_2023():
     """Test processing a 2023 Outback (harness D, angle LKAS)."""
@@ -103,7 +114,9 @@ def test_process_outback_2023():
     assert footnotes is not None
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
+    assert "global" in footnotes.footnotes
     assert footnotes.footnotes["lkas"].text == "Uses angle-based Lane Keep Assist System"
+    assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
 
 def test_process_crosstrek_hybrid_2020():
     """Test processing a 2020 Crosstrek Hybrid (harness B)."""
@@ -130,7 +143,9 @@ def test_process_crosstrek_hybrid_2020():
     assert footnotes is not None
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
+    assert "global" in footnotes.footnotes
     assert footnotes.footnotes["lkas"].text == "Uses torque-based Lane Keep Assist System"
+    assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
 
 def test_process_impreza_2019():
     """Test processing a 2019 Impreza (harness A)."""
@@ -157,7 +172,9 @@ def test_process_impreza_2019():
     assert footnotes is not None
     assert "eyesight" in footnotes.footnotes
     assert "lkas" in footnotes.footnotes
+    assert "global" in footnotes.footnotes
     assert footnotes.footnotes["lkas"].text == "Uses torque-based Lane Keep Assist System"
+    assert footnotes.footnotes["global"].text == SubaruFootnote.GLOBAL.value.text
 
 def test_process_nonexistent_model():
     """Test processing a nonexistent model."""

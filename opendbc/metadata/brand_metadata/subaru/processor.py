@@ -11,7 +11,7 @@ from opendbc.metadata.base.processor import BaseProcessor, ModelData
 from opendbc.metadata.base.parts import CarParts, Part, Tool
 from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
 from opendbc.metadata.base.constants import COLUMNS
-from opendbc.car.subaru.values import SubaruFlags, CAR
+from opendbc.car.subaru.values import SubaruFlags, CAR, Footnote as SubaruFootnote
 
 class SubaruProcessor(BaseProcessor):
     """Processor for Subaru vehicle metadata."""
@@ -72,6 +72,14 @@ class SubaruProcessor(BaseProcessor):
             "torque_lkas": Footnote(
                 text="Uses torque-based Lane Keep Assist System",
                 columns=["STEERING_TORQUE"]
+            ),
+            "global": Footnote(
+                text=SubaruFootnote.GLOBAL.value.text,
+                columns=["PACKAGE"]  # From values.py
+            ),
+            "exp_long": Footnote(
+                text=SubaruFootnote.EXP_LONG.value.text,
+                columns=["LONGITUDINAL"]  # From values.py
             )
         }
     
@@ -118,16 +126,21 @@ class SubaruProcessor(BaseProcessor):
         """Get footnotes specific to a Subaru model."""
         footnotes = {}
         
-        # All Subaru models require EyeSight
-        footnotes["eyesight"] = self.common_footnotes["eyesight"]
-        
         # Get platform configuration from CAR enum
         platform_config = getattr(CAR, model_data.platform).config
+        
+        # All Subaru models require EyeSight and have global market footnote
+        footnotes["eyesight"] = self.common_footnotes["eyesight"]
+        footnotes["global"] = self.common_footnotes["global"]
         
         # Add LKAS type footnote based on platform flags
         if platform_config.flags & SubaruFlags.LKAS_ANGLE:
             footnotes["lkas"] = self.common_footnotes["angle_lkas"]
         else:
             footnotes["lkas"] = self.common_footnotes["torque_lkas"]
+        
+        # Add experimental longitudinal control footnote if available
+        if hasattr(platform_config, "experimentalLongitudinalAvailable") and platform_config.experimentalLongitudinalAvailable:
+            footnotes["exp_long"] = self.common_footnotes["exp_long"]
             
         return FootnoteCollection.create(footnotes)
