@@ -9,54 +9,60 @@ def test_directory_structure():
     
     # Required directories
     required_dirs = [
-        "opendbc/metadata",
-        "opendbc/metadata/base",
-        "opendbc/metadata/brand_metadata",
-        "opendbc/metadata/brand_metadata/subaru",  # First brand implementation
-        "opendbc/metadata/brand_metadata/hyundai",  # Second brand implementation
-        "opendbc/metadata/tests",
-        "opendbc/metadata/tests/test_base",
-        "opendbc/metadata/tests/test_brand_metadata",
-        "opendbc/metadata/tests/test_brand_metadata/test_subaru",
-        "opendbc/metadata/tests/test_brand_metadata/test_hyundai",
+        "opendbc/metadata",                                      # Root package for metadata framework
+        "opendbc/metadata/base",                                 # Base components shared across brands
+        "opendbc/metadata/brand_metadata",                       # Brand-specific implementations
+        "opendbc/metadata/brand_metadata/subaru",                # Subaru implementation
+        "opendbc/metadata/brand_metadata/hyundai",               # Hyundai implementation
+        "opendbc/metadata/tests",                                # Test directory
+        "opendbc/metadata/tests/test_base",                      # Tests for base components
+        "opendbc/metadata/tests/test_brand_metadata",            # Tests for brand implementations
+        "opendbc/metadata/tests/test_brand_metadata/test_subaru", # Tests for Subaru implementation
+        "opendbc/metadata/tests/test_brand_metadata/test_hyundai", # Tests for Hyundai implementation
     ]
     
     # Required base files
     required_base_files = [
-        "opendbc/metadata/__init__.py",
-        "opendbc/metadata/base/__init__.py",
-        "opendbc/metadata/base/constants.py",
-        "opendbc/metadata/base/parts.py",
-        "opendbc/metadata/base/footnotes.py",
-        "opendbc/metadata/base/processor.py",
+        "opendbc/metadata/__init__.py",                          # Package exports and documentation
+        "opendbc/metadata/base/__init__.py",                     # Base package exports
+        "opendbc/metadata/base/constants.py",                    # Constants used throughout the framework
+        "opendbc/metadata/base/parts.py",                        # Core part data structures
+        "opendbc/metadata/base/footnotes.py",                    # Footnote data structures
+        "opendbc/metadata/base/processor.py",                    # Base processor for metadata
+        "opendbc/metadata/base/flag_processor.py",               # Flag-based processor for metadata
+        "opendbc/metadata/base/parts_catalog.py",                # Central catalog of parts
     ]
     
     # Required brand files (Subaru and Hyundai implementations)
     required_brand_files = [
-        "opendbc/metadata/brand_metadata/__init__.py",
-        "opendbc/metadata/brand_metadata/subaru/__init__.py",
-        "opendbc/metadata/brand_metadata/subaru/processor.py",
-        "opendbc/metadata/brand_metadata/subaru/attributes.py",  # For brand-specific metadata
-        "opendbc/metadata/brand_metadata/subaru/footnotes.py",  # For brand-specific footnotes
-        "opendbc/metadata/brand_metadata/hyundai/__init__.py",
-        "opendbc/metadata/brand_metadata/hyundai/processor.py",
+        "opendbc/metadata/brand_metadata/__init__.py",           # Brand metadata package exports
+        "opendbc/metadata/brand_metadata/subaru/__init__.py",    # Subaru package exports
+        "opendbc/metadata/brand_metadata/subaru/processor.py",   # Subaru-specific processor
+        "opendbc/metadata/brand_metadata/subaru/attributes.py",  # Subaru-specific attributes
+        "opendbc/metadata/brand_metadata/subaru/footnotes.py",   # Subaru-specific footnotes
+        "opendbc/metadata/brand_metadata/hyundai/__init__.py",   # Hyundai package exports
+        "opendbc/metadata/brand_metadata/hyundai/processor.py",  # Hyundai-specific processor
+        "opendbc/metadata/brand_metadata/hyundai/attributes.py", # Hyundai-specific attributes
     ]
     
     # Required test files
     required_test_files = [
-        "opendbc/metadata/tests/__init__.py",
-        "opendbc/metadata/tests/test_structure.py",
-        "opendbc/metadata/tests/test_base/__init__.py",
-        "opendbc/metadata/tests/test_base/test_constants.py",
-        "opendbc/metadata/tests/test_base/test_parts.py",
-        "opendbc/metadata/tests/test_base/test_footnotes.py",
-        "opendbc/metadata/tests/test_base/test_processor.py",
-        "opendbc/metadata/tests/test_brand_metadata/__init__.py",
-        "opendbc/metadata/tests/test_brand_metadata/test_subaru/__init__.py",
-        "opendbc/metadata/tests/test_brand_metadata/test_subaru/test_processor.py",
-        "opendbc/metadata/tests/test_brand_metadata/test_subaru/test_footnotes.py",
-        "opendbc/metadata/tests/test_brand_metadata/test_hyundai/__init__.py",
-        "opendbc/metadata/tests/test_brand_metadata/test_hyundai/test_processor.py",
+        "opendbc/metadata/tests/__init__.py",                    # Test package initialization
+        "opendbc/metadata/tests/test_structure.py",              # Tests for directory structure
+        "opendbc/metadata/tests/test_init.py",                   # Tests for package exports
+        "opendbc/metadata/tests/test_base/__init__.py",          # Base tests package
+        "opendbc/metadata/tests/test_base/test_constants.py",    # Tests for constants
+        "opendbc/metadata/tests/test_base/test_parts.py",        # Tests for parts
+        "opendbc/metadata/tests/test_base/test_footnotes.py",    # Tests for footnotes
+        "opendbc/metadata/tests/test_base/test_processor.py",    # Tests for processor
+        "opendbc/metadata/tests/test_base/test_parts_catalog.py", # Tests for parts catalog
+        "opendbc/metadata/tests/test_brand_metadata/__init__.py", # Brand tests package
+        "opendbc/metadata/tests/test_brand_metadata/test_parts_integration.py", # Tests for parts integration
+        "opendbc/metadata/tests/test_brand_metadata/test_subaru/__init__.py",   # Subaru tests package
+        "opendbc/metadata/tests/test_brand_metadata/test_subaru/test_processor.py", # Tests for Subaru processor
+        "opendbc/metadata/tests/test_brand_metadata/test_subaru/test_footnotes.py", # Tests for Subaru footnotes
+        "opendbc/metadata/tests/test_brand_metadata/test_hyundai/__init__.py",      # Hyundai tests package
+        "opendbc/metadata/tests/test_brand_metadata/test_hyundai/test_processor.py", # Tests for Hyundai processor
     ]
     
     # Check all required directories exist
