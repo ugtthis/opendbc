@@ -25,7 +25,10 @@ from opendbc.metadata.base import (
     BaseProcessor, ModelData,
     
     # Parts Definitions
-    Harness, ToolEnum, Kit, Accessory, Category, BasePart, EnumBase, get_part_by_name, get_all_parts
+    Harness, ToolEnum, Kit, Accessory, Category, BasePart, EnumBase, get_part_by_name, get_all_parts,
+    
+    # Model Helpers
+    get_model_data, get_visible_models, get_model_by_platform, get_all_parts_for_model
 )
 
 # Import flag-based processor if available
@@ -54,7 +57,10 @@ __all__ = [
     
     # Parts Definitions
     'Harness', 'ToolEnum', 'Kit', 'Accessory', 'Category', 'BasePart', 'EnumBase',
-    'get_part_by_name', 'get_all_parts'
+    'get_part_by_name', 'get_all_parts',
+    
+    # Model Helpers
+    'get_model_data', 'get_visible_models', 'get_model_by_platform', 'get_all_parts_for_model'
 ]
 
 # Add flag-based processor to __all__ if available

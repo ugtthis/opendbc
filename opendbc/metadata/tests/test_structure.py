@@ -31,6 +31,7 @@ def test_directory_structure():
         "opendbc/metadata/base/processor.py",                    # Base processor for metadata
         "opendbc/metadata/base/flag_processor.py",               # Flag-based processor for metadata
         "opendbc/metadata/base/parts_definitions.py",            # Central parts definitions
+        "opendbc/metadata/base/model_helpers.py",                # Helper functions for model data
     ]
     
     # Required brand files (Subaru and Hyundai implementations)
@@ -43,6 +44,7 @@ def test_directory_structure():
         "opendbc/metadata/brand_metadata/hyundai/__init__.py",   # Hyundai package exports
         "opendbc/metadata/brand_metadata/hyundai/processor.py",  # Hyundai-specific processor
         "opendbc/metadata/brand_metadata/hyundai/attributes.py", # Hyundai-specific attributes
+        "opendbc/metadata/brand_metadata/hyundai/footnotes.py",  # Hyundai-specific footnotes
     ]
     
     # Required test files

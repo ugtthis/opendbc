@@ -19,3 +19,9 @@ from opendbc.metadata.base.parts_definitions import (
     get_part_by_name,
     get_all_parts
 )
+from opendbc.metadata.base.model_helpers import (
+    get_model_data,
+    get_visible_models,
+    get_model_by_platform,
+    get_all_parts_for_model
+)

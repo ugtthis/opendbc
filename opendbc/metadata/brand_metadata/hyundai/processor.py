@@ -13,11 +13,17 @@ from opendbc.metadata.base.flag_processor import FlagConfig
 from opendbc.metadata.base.parts import CarParts, PartCategory
 from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
 from opendbc.metadata.base.constants import COLUMNS
+from opendbc.metadata.base.model_helpers import (
+    get_model_data as base_get_model_data,
+    get_visible_models as base_get_visible_models,
+    get_model_by_platform as base_get_model_by_platform,
+    get_all_parts_for_model
+)
 from opendbc.car.hyundai.values import HyundaiFlags, Footnote as HyundaiFootnote
 from opendbc.metadata.base.parts_definitions import Kit, Category  # Direct import from new system
-from opendbc.metadata.brand_metadata.hyundai.attributes import (
-    get_model_data, get_visible_models, get_model_by_platform,
-    get_all_parts_for_model, get_footnotes_for_model
+from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
+from opendbc.metadata.brand_metadata.hyundai.footnotes import (
+    FOOTNOTES, get_footnote, get_footnotes_for_model
 )
 
 @dataclass
@@ -26,7 +32,7 @@ class HyundaiProcessor(BaseProcessor):
     
     def process_model(self, model_id: str) -> Optional[Dict[str, Any]]:
         """Process metadata for a specific model."""
-        model_data = get_model_data(model_id)
+        model_data = self.get_model_data(model_id)
         if not model_data:
             return None
             
@@ -44,7 +50,7 @@ class HyundaiProcessor(BaseProcessor):
         
     def _get_parts(self, model_id: str) -> Optional[CarParts]:
         """Get required parts based on model data."""
-        model_data = get_model_data(model_id)
+        model_data = self.get_model_data(model_id)
         if not model_data:
             return None
             
@@ -81,14 +87,18 @@ class HyundaiProcessor(BaseProcessor):
         footnotes = get_footnotes_for_model(explicit_footnotes)
                 
         return FootnoteCollection.create(footnotes)
+    
+    def get_model_data(self, model_id: str) -> Optional[Dict[str, Any]]:
+        """Get the metadata for a specific model."""
+        return base_get_model_data(MODEL_DATA, model_id)
         
     def get_visible_models(self) -> List[str]:
         """Get a list of all models that should be visible in documentation."""
-        return get_visible_models()
+        return base_get_visible_models(MODEL_DATA)
         
     def get_model_by_platform(self, platform: str) -> Optional[str]:
         """Get the model ID for a specific platform."""
-        return get_model_by_platform(platform)
+        return base_get_model_by_platform(MODEL_DATA, platform)
 
     # Define flag configurations with direct references
     FLAGS = HyundaiFlags

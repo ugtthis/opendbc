@@ -2,44 +2,12 @@
 Static metadata attributes for Hyundai vehicles.
 
 This module contains all the non-functional metadata for Hyundai vehicles,
-including model information, parts, footnotes, and other documentation-related information.
+including model information, parts, and other documentation-related information.
+Footnotes have been moved to footnotes.py and helper functions to base/model_helpers.py.
 """
 
-from typing import Dict, List, Optional, Any
-from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit, EnumBase, Category
-from opendbc.metadata.base.footnotes import Footnote
-from opendbc.metadata.base.constants import COLUMNS
-
-# ===== FOOTNOTE DEFINITIONS =====
-
-# Common footnotes
-FOOTNOTE_SCC = Footnote(
-    text="Requires Smart Cruise Control (SCC)",
-    columns=["LONGITUDINAL", "STEERING_TORQUE"]
-)
-
-FOOTNOTE_MIN_SPEED = Footnote(
-    text="Minimum engage speed is 32 mph (51 km/h)",
-    columns=["FSR_STEERING"]
-)
-
-FOOTNOTE_RADAR_SCC = Footnote(
-    text="Uses radar-based Smart Cruise Control",
-    columns=["LONGITUDINAL"]
-)
-
-FOOTNOTE_CANFD = Footnote(
-    text="Uses CAN FD communication",
-    columns=["MODEL"]
-)
-
-# Footnotes dictionary for easy lookup
-FOOTNOTES = {
-    "scc": FOOTNOTE_SCC,
-    "min_speed": FOOTNOTE_MIN_SPEED,
-    "radar_scc": FOOTNOTE_RADAR_SCC,
-    "canfd": FOOTNOTE_CANFD
-}
+from typing import Dict, Any
+from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit
 
 # ===== MODEL DATA =====
 
@@ -236,52 +204,4 @@ MODEL_DATA = {
         "visible_in_docs": True,
         "platform": "HYUNDAI_TUCSON_4TH_GEN"
     },
-}
-
-# ===== HELPER FUNCTIONS =====
-
-def get_model_data(model_id: str) -> Optional[Dict[str, Any]]:
-    """Get the metadata for a specific model."""
-    return MODEL_DATA.get(model_id)
-
-def get_visible_models() -> List[str]:
-    """Get a list of all models that should be visible in documentation."""
-    return [model_id for model_id, data in MODEL_DATA.items() 
-            if data.get("visible_in_docs", True)]
-
-def get_model_by_platform(platform: str) -> Optional[str]:
-    """Get the model ID for a specific platform."""
-    for model_id, data in MODEL_DATA.items():
-        if data.get("platform") == platform:
-            return model_id
-    return None
-
-def get_all_parts_for_model(explicit_parts: List[EnumBase]) -> List[EnumBase]:
-    """Get all parts including dependencies for a model."""
-    all_parts = []
-    processed_parts = set()
-    
-    for part_enum in explicit_parts:
-        if part_enum in processed_parts:
-            continue
-            
-        all_parts.append(part_enum)
-        processed_parts.add(part_enum)
-        
-        # Add dependencies through the all_parts() method
-        for dep_part in part_enum.value.all_parts():
-            if dep_part not in processed_parts:
-                all_parts.append(dep_part)
-                processed_parts.add(dep_part)
-    
-    return all_parts
-
-def get_footnote(footnote_id: str) -> Optional[Footnote]:
-    """Get a footnote by its ID."""
-    return FOOTNOTES.get(footnote_id)
-
-def get_footnotes_for_model(explicit_footnotes: List[str]) -> Dict[str, Footnote]:
-    """Get all footnotes for a model."""
-    return {footnote_id: FOOTNOTES[footnote_id] 
-            for footnote_id in explicit_footnotes 
-            if footnote_id in FOOTNOTES} 
+} 
