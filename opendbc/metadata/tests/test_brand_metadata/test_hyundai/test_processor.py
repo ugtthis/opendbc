@@ -3,7 +3,7 @@
 import pytest
 from opendbc.metadata.base.processor import ModelData
 from opendbc.metadata.brand_metadata.hyundai.processor import HyundaiProcessor
-from opendbc.metadata.brand_metadata.hyundai.attributes import HyundaiHarness, HyundaiTool, HyundaiKit
+from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit
 from opendbc.car.hyundai.values import Footnote as HyundaiFootnote, HyundaiFlags, CAR, HyundaiPlatformConfig
 
 def test_hyundai_processor_initialization():
@@ -41,7 +41,7 @@ def test_process_elantra_2021():
     assert parts is not None
     assert len(parts.parts) == 2  # K harness and CAN FD kit
     assert any(part.name == "Hyundai K connector" for part in parts.parts)
-    assert any(part.name == "CAN FD Kit" for part in parts.parts)
+    assert any(part.name == "CAN FD panda kit" for part in parts.parts)
     
     # Check footnotes - should have SCC but no min_speed (no MIN_STEER_32_MPH flag)
     footnotes = processor.get_footnotes("Hyundai Elantra 2021-23")
@@ -136,7 +136,7 @@ def test_required_parts():
     assert parts is not None
     assert len(parts.parts) == 2
     assert any(part.name == "Hyundai K connector" for part in parts.parts)
-    assert any(part.name == "CAN FD Kit" for part in parts.parts)
+    assert any(part.name == "CAN FD panda kit" for part in parts.parts)
     assert any(part.name == "Pry Tool" for part in parts.tools)
     
     # Test Ioniq 6 (should have P harness and CAN FD kit)
@@ -153,7 +153,7 @@ def test_required_parts():
     assert parts is not None
     assert len(parts.parts) == 2
     assert any(part.name == "Hyundai P connector" for part in parts.parts)
-    assert any(part.name == "CAN FD Kit" for part in parts.parts)
+    assert any(part.name == "CAN FD panda kit" for part in parts.parts)
     assert any(part.name == "Pry Tool" for part in parts.tools)
     
     # Test Tucson (should have N harness and CAN FD kit)
@@ -170,7 +170,7 @@ def test_required_parts():
     assert parts is not None
     assert len(parts.parts) == 2
     assert any(part.name == "Hyundai N connector" for part in parts.parts)
-    assert any(part.name == "CAN FD Kit" for part in parts.parts)
+    assert any(part.name == "CAN FD panda kit" for part in parts.parts)
     assert any(part.name == "Pry Tool" for part in parts.tools)
 
 def test_get_model_by_platform():

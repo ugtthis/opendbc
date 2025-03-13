@@ -24,13 +24,13 @@ from opendbc.metadata.base import (
     # Processors
     BaseProcessor, ModelData,
     
-    # Parts Catalog
-    PartsCatalog, HarnessId, ToolId, AccessoryId, CableId, MountId, DeviceId, KitId
+    # Parts Definitions
+    Harness, ToolEnum, Kit, Accessory, Category, BasePart, EnumBase, get_part_by_name, get_all_parts
 )
 
 # Import flag-based processor if available
 try:
-    from opendbc.metadata.base import FlagBasedProcessor, FlagConfig
+    from opendbc.metadata.base.flag_processor import FlagBasedProcessor, FlagConfig
 except ImportError:
     pass
 
@@ -52,6 +52,13 @@ __all__ = [
     # Processors
     'BaseProcessor', 'ModelData', 'SubaruProcessor', 'HyundaiProcessor',
     
-    # Parts Catalog
-    'PartsCatalog', 'HarnessId', 'ToolId', 'AccessoryId', 'CableId', 'MountId', 'DeviceId', 'KitId'
+    # Parts Definitions
+    'Harness', 'ToolEnum', 'Kit', 'Accessory', 'Category', 'BasePart', 'EnumBase',
+    'get_part_by_name', 'get_all_parts'
 ]
+
+# Add flag-based processor to __all__ if available
+try:
+    __all__.extend(['FlagBasedProcessor', 'FlagConfig'])
+except NameError:
+    pass

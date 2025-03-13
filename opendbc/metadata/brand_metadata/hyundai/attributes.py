@@ -6,196 +6,9 @@ including model information, parts, footnotes, and other documentation-related i
 """
 
 from typing import Dict, List, Optional, Any
-from enum import Enum
-from opendbc.metadata.base.parts import Part, PartCategory
+from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit, EnumBase, Category
 from opendbc.metadata.base.footnotes import Footnote
 from opendbc.metadata.base.constants import COLUMNS
-
-# ===== PARTS DEFINITIONS =====
-
-# Base part class for enums
-class BasePart:
-    """Base class for part enums to store the actual Part object."""
-    def __init__(self, part: Part):
-        self.part = part
-
-# Harness enum
-class HyundaiHarness(Enum):
-    """Enum for Hyundai harnesses."""
-    A = BasePart(Part(
-        id="hyundai_harness_a",
-        name="Hyundai A connector",
-        category=PartCategory.HARNESS,
-        description="For Hyundai Sonata 2020+ models",
-        url="https://comma.ai/shop/products/comma-car-harness"
-    ))
-    
-    B = BasePart(Part(
-        id="hyundai_harness_b",
-        name="Hyundai B connector",
-        category=PartCategory.HARNESS,
-        description="For Hyundai Elantra 2017-18 models",
-        url="https://comma.ai/shop/products/comma-car-harness"
-    ))
-    
-    C = BasePart(Part(
-        id="hyundai_c",
-        name="Hyundai C connector",
-        category=PartCategory.HARNESS,
-        description="For hybrid/EV models with standard SCC"
-    ))
-    
-    D = BasePart(Part(
-        id="hyundai_d",
-        name="Hyundai D connector",
-        category=PartCategory.HARNESS,
-        description="For models with Mando radar"
-    ))
-    
-    E = BasePart(Part(
-        id="hyundai_e",
-        name="Hyundai E connector",
-        category=PartCategory.HARNESS,
-        description="For legacy models"
-    ))
-    
-    F = BasePart(Part(
-        id="hyundai_f",
-        name="Hyundai F connector",
-        category=PartCategory.HARNESS,
-        description="For Genesis models"
-    ))
-    
-    G = BasePart(Part(
-        id="hyundai_harness_g",
-        name="Hyundai G connector",
-        category=PartCategory.HARNESS,
-        description="For Hyundai Elantra 2019 models",
-        url="https://comma.ai/shop/products/comma-car-harness"
-    ))
-    
-    H = BasePart(Part(
-        id="hyundai_h",
-        name="Hyundai H connector",
-        category=PartCategory.HARNESS,
-        description="For newer hybrid/EV models"
-    ))
-    
-    I = BasePart(Part(
-        id="hyundai_i",
-        name="Hyundai I connector",
-        category=PartCategory.HARNESS,
-        description="For Kona Hybrid 2020"
-    ))
-    
-    J = BasePart(Part(
-        id="hyundai_j",
-        name="Hyundai J connector",
-        category=PartCategory.HARNESS,
-        description="For Genesis 2015-17"
-    ))
-    
-    K = BasePart(Part(
-        id="hyundai_harness_k",
-        name="Hyundai K connector",
-        category=PartCategory.HARNESS,
-        description="For Hyundai Elantra 2021+ models",
-        url="https://comma.ai/shop/products/comma-car-harness"
-    ))
-    
-    L = BasePart(Part(
-        id="hyundai_l",
-        name="Hyundai L connector",
-        category=PartCategory.HARNESS,
-        description="For newer models with CAN FD"
-    ))
-    
-    M = BasePart(Part(
-        id="hyundai_m",
-        name="Hyundai M connector",
-        category=PartCategory.HARNESS,
-        description="For Genesis GV70 3.5T and GV80"
-    ))
-    
-    N = BasePart(Part(
-        id="hyundai_n",
-        name="Hyundai N connector",
-        category=PartCategory.HARNESS,
-        description="For 4th gen Tucson and Santa Cruz"
-    ))
-    
-    O = BasePart(Part(
-        id="hyundai_o",
-        name="Hyundai O connector",
-        category=PartCategory.HARNESS,
-        description="For Kona 2022 and Kona Electric 2022-23"
-    ))
-    
-    P = BasePart(Part(
-        id="hyundai_p",
-        name="Hyundai P connector",
-        category=PartCategory.HARNESS,
-        description="For Ioniq 6 with HDA II"
-    ))
-    
-    Q = BasePart(Part(
-        id="hyundai_q",
-        name="Hyundai Q connector",
-        category=PartCategory.HARNESS,
-        description="For Ioniq 5 with HDA II"
-    ))
-    
-    R = BasePart(Part(
-        id="hyundai_r",
-        name="Hyundai R connector",
-        category=PartCategory.HARNESS,
-        description="For Kona Electric 2nd Gen"
-    ))
-
-# Tool enum
-class HyundaiTool(Enum):
-    """Enum for tools used with Hyundai vehicles."""
-    PRY_TOOL = BasePart(Part(
-        id="pry_tool",
-        name="Pry Tool",
-        category=PartCategory.TOOL,
-        description="For removing interior trim pieces",
-        url="https://comma.ai/shop/products/pry-tool"
-    ))
-
-# Kit enum
-class HyundaiKit(Enum):
-    """Enum for kits used with Hyundai vehicles."""
-    CANFD_KIT = BasePart(Part(
-        id="canfd_kit",
-        name="CAN FD Kit",
-        category=PartCategory.ACCESSORY,
-        description="Required for CAN FD vehicles"
-    ))
-
-# Part dependencies mapping
-PART_DEPENDENCIES = {
-    # All harnesses require the pry tool
-    HyundaiHarness.A: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.B: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.C: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.D: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.E: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.F: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.G: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.H: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.I: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.J: [HyundaiTool.PRY_TOOL],
-    # Some harnesses also require the CAN FD kit
-    HyundaiHarness.K: [HyundaiTool.PRY_TOOL, HyundaiKit.CANFD_KIT],
-    HyundaiHarness.L: [HyundaiTool.PRY_TOOL, HyundaiKit.CANFD_KIT],
-    HyundaiHarness.M: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.N: [HyundaiTool.PRY_TOOL, HyundaiKit.CANFD_KIT],
-    HyundaiHarness.O: [HyundaiTool.PRY_TOOL],
-    HyundaiHarness.P: [HyundaiTool.PRY_TOOL, HyundaiKit.CANFD_KIT],
-    HyundaiHarness.Q: [HyundaiTool.PRY_TOOL, HyundaiKit.CANFD_KIT],
-    HyundaiHarness.R: [HyundaiTool.PRY_TOOL],
-}
 
 # ===== FOOTNOTE DEFINITIONS =====
 
@@ -238,7 +51,7 @@ MODEL_DATA = {
         "package": "Smart Cruise Control (SCC)",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["min_speed"],
-        "explicit_parts": [HyundaiHarness.B],
+        "explicit_parts": [Harness.HYUNDAI_B, Tool.PRY_TOOL],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 32 * 0.44704,  # 32 mph in m/s
@@ -254,7 +67,7 @@ MODEL_DATA = {
         "package": "Smart Cruise Control (SCC)",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["min_speed", "scc"],
-        "explicit_parts": [HyundaiHarness.G],
+        "explicit_parts": [Harness.HYUNDAI_G, Tool.PRY_TOOL],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 32 * 0.44704,  # 32 mph in m/s
@@ -270,7 +83,7 @@ MODEL_DATA = {
         "package": "Smart Cruise Control (SCC)",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["scc"],
-        "explicit_parts": [HyundaiHarness.K],
+        "explicit_parts": [Harness.HYUNDAI_K, Tool.PRY_TOOL, Kit.CANFD_KIT],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -286,7 +99,7 @@ MODEL_DATA = {
         "package": "All",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["radar_scc", "scc"],
-        "explicit_parts": [HyundaiHarness.A],
+        "explicit_parts": [Harness.HYUNDAI_A, Tool.PRY_TOOL],  # Direct references
         "support_type": "upstream",
         "video_link": "https://www.youtube.com/watch?v=ix63r9kE3Fw",
         "min_steer_speed": 0.0,
@@ -302,7 +115,7 @@ MODEL_DATA = {
         "package": "All",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["radar_scc"],
-        "explicit_parts": [HyundaiHarness.A],
+        "explicit_parts": [Harness.HYUNDAI_A, Tool.PRY_TOOL],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -318,7 +131,7 @@ MODEL_DATA = {
         "package": "Smart Cruise Control (SCC)",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["scc"],
-        "explicit_parts": [HyundaiHarness.B],
+        "explicit_parts": [Harness.HYUNDAI_B, Tool.PRY_TOOL],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -334,7 +147,7 @@ MODEL_DATA = {
         "package": "Smart Cruise Control (SCC)",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["scc"],
-        "explicit_parts": [HyundaiHarness.O],
+        "explicit_parts": [Harness.HYUNDAI_O, Tool.PRY_TOOL],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -350,7 +163,7 @@ MODEL_DATA = {
         "package": "Smart Cruise Control (SCC)",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["scc"],
-        "explicit_parts": [HyundaiHarness.O],
+        "explicit_parts": [Harness.HYUNDAI_O, Tool.PRY_TOOL],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -366,7 +179,7 @@ MODEL_DATA = {
         "package": "Smart Cruise Control (SCC)",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["scc"],
-        "explicit_parts": [HyundaiHarness.I],
+        "explicit_parts": [Harness.HYUNDAI_I, Tool.PRY_TOOL],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -382,7 +195,7 @@ MODEL_DATA = {
         "package": "Highway Driving Assist II",
         "requirements": "Highway Driving Assist II",
         "explicit_footnotes": ["canfd"],
-        "explicit_parts": [HyundaiHarness.P],
+        "explicit_parts": [Harness.HYUNDAI_P, Tool.PRY_TOOL, Kit.CANFD_KIT],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -398,7 +211,7 @@ MODEL_DATA = {
         "package": "Highway Driving Assist II",
         "requirements": "Highway Driving Assist II",
         "explicit_footnotes": ["canfd"],
-        "explicit_parts": [HyundaiHarness.Q],
+        "explicit_parts": [Harness.HYUNDAI_Q, Tool.PRY_TOOL, Kit.CANFD_KIT],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -414,7 +227,7 @@ MODEL_DATA = {
         "package": "All",
         "requirements": "Smart Cruise Control",
         "explicit_footnotes": ["canfd"],
-        "explicit_parts": [HyundaiHarness.N],
+        "explicit_parts": [Harness.HYUNDAI_N, Tool.PRY_TOOL, Kit.CANFD_KIT],  # Direct references
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
@@ -443,16 +256,7 @@ def get_model_by_platform(platform: str) -> Optional[str]:
             return model_id
     return None
 
-def get_part(part_enum) -> Part:
-    """Get a Part object from a part enum value."""
-    return part_enum.value.part
-
-def get_part_dependencies(part_enum) -> List[Part]:
-    """Get all dependencies for a part."""
-    dependencies = PART_DEPENDENCIES.get(part_enum, [])
-    return [dep.value.part for dep in dependencies]
-
-def get_all_parts_for_model(explicit_parts: List[Any]) -> List[Part]:
+def get_all_parts_for_model(explicit_parts: List[EnumBase]) -> List[EnumBase]:
     """Get all parts including dependencies for a model."""
     all_parts = []
     processed_parts = set()
@@ -461,19 +265,14 @@ def get_all_parts_for_model(explicit_parts: List[Any]) -> List[Part]:
         if part_enum in processed_parts:
             continue
             
-        part = get_part(part_enum)
-        if part:
-            all_parts.append(part)
-            processed_parts.add(part_enum)
-            
-            # Add dependencies
-            dependencies = PART_DEPENDENCIES.get(part_enum, [])
-            
-            for dep_enum in dependencies:
-                if dep_enum not in processed_parts:
-                    dep_part = get_part(dep_enum)
-                    all_parts.append(dep_part)
-                    processed_parts.add(dep_enum)
+        all_parts.append(part_enum)
+        processed_parts.add(part_enum)
+        
+        # Add dependencies through the all_parts() method
+        for dep_part in part_enum.value.all_parts():
+            if dep_part not in processed_parts:
+                all_parts.append(dep_part)
+                processed_parts.add(dep_part)
     
     return all_parts
 

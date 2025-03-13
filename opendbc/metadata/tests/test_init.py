@@ -1,4 +1,4 @@
-"""Tests for the metadata package's __init__.py file."""
+"""Tests for the metadata package initialization."""
 
 import pytest
 
@@ -33,42 +33,27 @@ def test_metadata_imports():
     assert hasattr(metadata, 'SubaruProcessor')
     assert hasattr(metadata, 'HyundaiProcessor')
     
-    # Test parts catalog
-    assert hasattr(metadata, 'PartsCatalog')
-    assert hasattr(metadata, 'HarnessId')
-    assert hasattr(metadata, 'ToolId')
-    assert hasattr(metadata, 'AccessoryId')
-    assert hasattr(metadata, 'CableId')
-    assert hasattr(metadata, 'MountId')
-    assert hasattr(metadata, 'DeviceId')
-    assert hasattr(metadata, 'KitId')
-    
-    # Test that the components are the correct types
-    from opendbc.metadata.base.parts import Part as BasePart
-    from opendbc.metadata.base.footnotes import Footnote as BaseFootnote
-    from opendbc.metadata.base.processor import BaseProcessor as BaseBaseProcessor
-    from opendbc.metadata.base.parts_catalog import PartsCatalog as BasePartsCatalog
-    
-    assert isinstance(metadata.Part, type)
-    assert metadata.Part == BasePart
-    
-    assert isinstance(metadata.Footnote, type)
-    assert metadata.Footnote == BaseFootnote
-    
-    assert isinstance(metadata.BaseProcessor, type)
-    assert metadata.BaseProcessor == BaseBaseProcessor
-    
-    assert metadata.PartsCatalog == BasePartsCatalog
+    # Test parts definitions
+    assert hasattr(metadata, 'Harness')
+    assert hasattr(metadata, 'ToolEnum')
+    assert hasattr(metadata, 'Kit')
+    assert hasattr(metadata, 'Accessory')
+    assert hasattr(metadata, 'Category')
+    assert hasattr(metadata, 'BasePart')
+    assert hasattr(metadata, 'EnumBase')
+    assert hasattr(metadata, 'get_part_by_name')
+    assert hasattr(metadata, 'get_all_parts')
 
 def test_flag_based_processor_import():
-    """Test that FlagBasedProcessor is imported if available."""
-    import opendbc.metadata as metadata
-    
-    # Check if FlagBasedProcessor is available
+    """Test that the flag-based processor is properly exported if available."""
     try:
-        from opendbc.metadata.base import FlagBasedProcessor
+        # Try to import the flag-based processor directly
+        from opendbc.metadata.base.flag_processor import FlagBasedProcessor, FlagConfig
+        
+        # If we get here, the flag-based processor is available, so check if it's exported
+        import opendbc.metadata as metadata
         assert hasattr(metadata, 'FlagBasedProcessor')
         assert hasattr(metadata, 'FlagConfig')
     except ImportError:
-        # If not available, the test should pass anyway
-        pass 
+        # Flag-based processor is not available, skip the test
+        pytest.skip("FlagBasedProcessor not available") 

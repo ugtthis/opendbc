@@ -8,13 +8,14 @@ from opendbc.metadata.base.constants import COLUMNS, EXTRA_CARS_COLUMNS, STARS, 
 from opendbc.metadata.base.parts import Part, PartCategory, Tool, CarParts, PlatformParts, BrandPartProcessor
 from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
 from opendbc.metadata.base.processor import ModelData, BaseProcessor
-from opendbc.metadata.base.parts_catalog import (
-    PartsCatalog, 
-    HarnessId, 
-    ToolId, 
-    AccessoryId,
-    CableId,
-    MountId,
-    DeviceId,
-    KitId
+from opendbc.metadata.base.parts_definitions import (
+    Harness, 
+    Tool as ToolEnum, 
+    Kit, 
+    Accessory, 
+    Category,
+    BasePart,
+    EnumBase,
+    get_part_by_name,
+    get_all_parts
 )

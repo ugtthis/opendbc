@@ -30,7 +30,7 @@ def test_directory_structure():
         "opendbc/metadata/base/footnotes.py",                    # Footnote data structures
         "opendbc/metadata/base/processor.py",                    # Base processor for metadata
         "opendbc/metadata/base/flag_processor.py",               # Flag-based processor for metadata
-        "opendbc/metadata/base/parts_catalog.py",                # Central catalog of parts
+        "opendbc/metadata/base/parts_definitions.py",            # Central parts definitions
     ]
     
     # Required brand files (Subaru and Hyundai implementations)
@@ -47,15 +47,15 @@ def test_directory_structure():
     
     # Required test files
     required_test_files = [
-        "opendbc/metadata/tests/__init__.py",                    # Test package initialization
+        "opendbc/metadata/tests/__init__.py",                    # Test package exports
+        "opendbc/metadata/tests/test_init.py",                   # Tests for metadata imports
         "opendbc/metadata/tests/test_structure.py",              # Tests for directory structure
-        "opendbc/metadata/tests/test_init.py",                   # Tests for package exports
-        "opendbc/metadata/tests/test_base/__init__.py",          # Base tests package
+        "opendbc/metadata/tests/test_base/__init__.py",          # Base test package exports
         "opendbc/metadata/tests/test_base/test_constants.py",    # Tests for constants
         "opendbc/metadata/tests/test_base/test_parts.py",        # Tests for parts
         "opendbc/metadata/tests/test_base/test_footnotes.py",    # Tests for footnotes
         "opendbc/metadata/tests/test_base/test_processor.py",    # Tests for processor
-        "opendbc/metadata/tests/test_base/test_parts_catalog.py", # Tests for parts catalog
+        "opendbc/metadata/tests/test_parts_definitions.py",      # Tests for parts definitions
         "opendbc/metadata/tests/test_brand_metadata/__init__.py", # Brand tests package
         "opendbc/metadata/tests/test_brand_metadata/test_parts_integration.py", # Tests for parts integration
         "opendbc/metadata/tests/test_brand_metadata/test_subaru/__init__.py",   # Subaru tests package

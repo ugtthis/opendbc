@@ -6,19 +6,19 @@ Focuses on harness selection and relevant footnotes based on model/year.
 """
 
 from typing import Dict, List, Optional, Any
+from dataclasses import dataclass
 
 from opendbc.metadata.base.processor import BaseProcessor
 from opendbc.metadata.base.flag_processor import FlagConfig
-from opendbc.metadata.base.parts import Part, CarParts, PartCategory
+from opendbc.metadata.base.parts import CarParts, PartCategory
 from opendbc.metadata.base.footnotes import Footnote, FootnoteCollection
 from opendbc.metadata.base.constants import COLUMNS
 from opendbc.car.hyundai.values import HyundaiFlags, Footnote as HyundaiFootnote
+from opendbc.metadata.base.parts_definitions import Kit, Category  # Direct import from new system
 from opendbc.metadata.brand_metadata.hyundai.attributes import (
     get_model_data, get_visible_models, get_model_by_platform,
-    get_all_parts_for_model, get_footnotes_for_model, HyundaiKit
+    get_all_parts_for_model, get_footnotes_for_model
 )
-
-from dataclasses import dataclass
 
 @dataclass
 class HyundaiProcessor(BaseProcessor):
@@ -63,12 +63,13 @@ class HyundaiProcessor(BaseProcessor):
         tools = []
         
         for part in all_parts:
-            if part.category == PartCategory.TOOL:
+            if part.category == Category.TOOL:
                 tools.append(part)
             else:
                 parts.append(part)
                 
-        return CarParts.create(parts=parts, tools=tools)
+        # Convert to CarParts for compatibility
+        return CarParts.create_from_enums(parts=parts, tools=tools)
         
     def _get_footnotes(self, model_data: Dict[str, Any]) -> Optional[FootnoteCollection]:
         """Get footnotes based on model data."""
@@ -89,7 +90,7 @@ class HyundaiProcessor(BaseProcessor):
         """Get the model ID for a specific platform."""
         return get_model_by_platform(platform)
 
-    # Define flag configurations
+    # Define flag configurations with direct references
     FLAGS = HyundaiFlags
     FLAG_CONFIGS = [
         FlagConfig(
@@ -109,7 +110,7 @@ class HyundaiProcessor(BaseProcessor):
             footnote_key='canfd',
             footnote_text=HyundaiFootnote.CANFD.value.text,
             footnote_column='MODEL',
-            part_required=HyundaiKit.CANFD_KIT
+            part_required=Kit.CANFD_KIT  # Direct reference to enum
         ),
     ]
 
