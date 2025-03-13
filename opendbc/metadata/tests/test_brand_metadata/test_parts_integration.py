@@ -5,6 +5,7 @@ from opendbc.metadata.brand_metadata.subaru.processor import SubaruProcessor
 from opendbc.metadata.brand_metadata.hyundai.processor import HyundaiProcessor
 from opendbc.metadata.base.processor import ModelData
 from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit
+from unittest.mock import patch
 
 def test_subaru_processor_uses_parts_catalog():
     """Test that the Subaru processor uses the enum-based parts system."""
@@ -62,30 +63,34 @@ def test_hyundai_processor_uses_parts_catalog():
     """Test that the Hyundai processor uses the enum-based parts system."""
     processor = HyundaiProcessor()
     
-    # Set up test model data
-    model_data = ModelData(
-        make="Hyundai",
-        model="Elantra",
-        years=[2021, 2022, 2023],
-        platform="HYUNDAI_ELANTRA_2021"
-    )
-    processor.model_data["Hyundai Elantra 2021-23"] = model_data
+    # Set up test model data with explicit parts
+    model_data = {
+        "make": "Hyundai",
+        "model": "Ioniq 5",
+        "years": [2022, 2023, 2024],
+        "platform": "HYUNDAI_IONIQ_5",
+        "package": "All",
+        "explicit_parts": ["Harness.HYUNDAI_Q"],
+        "explicit_footnotes": ["scc"]
+    }
     
-    # Process the model
-    processor.process_model("Hyundai Elantra 2021-23")
-    
-    # Get parts for the model
-    parts = processor.get_parts("Hyundai Elantra 2021-23")
-    
-    # Check that the parts match the expected values
-    assert parts is not None
-    assert len(parts.parts) == 2  # K harness and CAN FD kit
-    
-    # Check harness
-    assert any(part.name == Harness.HYUNDAI_K.name for part in parts.parts)
-    
-    # Check CAN FD kit
-    assert any(part.name == Kit.CANFD_KIT.name for part in parts.parts)
-    
-    # Check pry tool
-    assert any(part.name == Tool.PRY_TOOL.name for part in parts.tools) 
+    # Mock the get_model_data method
+    with patch.object(HyundaiProcessor, 'get_model_data', return_value=model_data):
+        # Process the model
+        processor.process_model("Hyundai Ioniq 5 2022-24")
+        
+        # Get parts for the model
+        parts = processor.get_parts("Hyundai Ioniq 5 2022-24")
+        
+        # Check that the parts match the expected values
+        assert parts is not None
+        assert len(parts.parts) == 2  # Q harness and CAN FD kit
+        
+        # Check harness
+        assert any(part.name == "Hyundai Q connector" for part in parts.parts)
+        
+        # Check CAN FD kit
+        assert any(part.name == "CAN FD panda kit" for part in parts.parts)
+        
+        # Check pry tool
+        assert any(part.name == "Pry Tool" for part in parts.tools) 

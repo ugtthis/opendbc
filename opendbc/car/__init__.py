@@ -328,6 +328,7 @@ class PlatformsType(EnumType):
     for key in classdict._member_names.keys():
       cfg: PlatformConfig = classdict[key]
       cfg.platform_str = key
+      cfg.__post_init__()  # Call __post_init__ before freezing
       cfg.freeze()
     return super().__new__(metacls, cls, bases, classdict, boundary=boundary, _simple=_simple, **kwds)
 

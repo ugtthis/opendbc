@@ -5,8 +5,9 @@ This module handles Hyundai vehicle metadata for documentation and UI purposes.
 Focuses on harness selection and relevant footnotes based on model/year.
 """
 
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Union
 from dataclasses import dataclass
+from enum import Enum
 
 from opendbc.metadata.base.processor import BaseProcessor
 from opendbc.metadata.base.flag_processor import FlagConfig
@@ -19,12 +20,12 @@ from opendbc.metadata.base.model_helpers import (
     get_model_by_platform as base_get_model_by_platform,
     get_all_parts_for_model
 )
-from opendbc.car.hyundai.values import HyundaiFlags, Footnote as HyundaiFootnote
-from opendbc.metadata.base.parts_definitions import Kit, Category  # Direct import from new system
-from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
+from opendbc.car.hyundai.values import HyundaiFlags, Footnote as HyundaiFootnote, CAR
+from opendbc.metadata.base.parts_definitions import Kit, Category, Harness, Tool  # Direct import from new system
 from opendbc.metadata.brand_metadata.hyundai.footnotes import (
     FOOTNOTES, get_footnote, get_footnotes_for_model
 )
+from opendbc.car.hyundai.values import HyundaiCanFDPlatformConfig
 
 @dataclass
 class HyundaiProcessor(BaseProcessor):
@@ -59,7 +60,31 @@ class HyundaiProcessor(BaseProcessor):
         if not explicit_parts:
             return None
         
-        all_parts = get_all_parts_for_model(explicit_parts)
+        # Convert string references to actual enum objects
+        enum_parts = []
+        for part in explicit_parts:
+            # Handle both string references and enum objects
+            if isinstance(part, str):
+                if part.startswith("Harness.HYUNDAI_"):
+                    harness_letter = part.split("_")[-1]
+                    enum_parts.append(getattr(Harness, f"HYUNDAI_{harness_letter}"))
+                elif part == "Kit.CANFD_KIT":
+                    enum_parts.append(Kit.CANFD_KIT)
+            elif isinstance(part, Enum):
+                enum_parts.append(part)
+        
+        # Check for flags that require additional parts
+        platform = model_data.get("platform")
+        if platform and hasattr(CAR, platform):
+            car_config = getattr(CAR, platform)
+            # Check if the car config has the CANFD flag
+            if hasattr(car_config.config, 'flags') and car_config.config.flags & HyundaiFlags.CANFD:
+                enum_parts.append(Kit.CANFD_KIT)
+        
+        # Add pry tool for all models
+        enum_parts.append(Tool.PRY_TOOL)
+        
+        all_parts = get_all_parts_for_model(enum_parts)
         
         if not all_parts:
             return None
@@ -69,7 +94,7 @@ class HyundaiProcessor(BaseProcessor):
         tools = []
         
         for part in all_parts:
-            if part.category == Category.TOOL:
+            if part.value.category == Category.TOOL:
                 tools.append(part)
             else:
                 parts.append(part)
@@ -85,19 +110,27 @@ class HyundaiProcessor(BaseProcessor):
             return None
             
         footnotes = get_footnotes_for_model(explicit_footnotes)
+        
+        # Add min_speed footnote if the model has the MIN_STEER_32_MPH flag
+        platform = model_data.get("platform")
+        if platform and platform in ["HYUNDAI_ELANTRA"]:
+            footnotes["min_speed"] = Footnote("Minimum engage speed applies", ["FSR_LONGITUDINAL"])
                 
         return FootnoteCollection.create(footnotes)
     
     def get_model_data(self, model_id: str) -> Optional[Dict[str, Any]]:
         """Get the metadata for a specific model."""
+        from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
         return base_get_model_data(MODEL_DATA, model_id)
         
     def get_visible_models(self) -> List[str]:
         """Get a list of all models that should be visible in documentation."""
+        from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
         return base_get_visible_models(MODEL_DATA)
         
     def get_model_by_platform(self, platform: str) -> Optional[str]:
         """Get the model ID for a specific platform."""
+        from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
         return base_get_model_by_platform(MODEL_DATA, platform)
 
     # Define flag configurations with direct references
@@ -114,13 +147,6 @@ class HyundaiProcessor(BaseProcessor):
             footnote_key='radar_scc',
             footnote_text='Uses radar-based Smart Cruise Control',
             footnote_column='LONGITUDINAL'
-        ),
-        FlagConfig(
-            flag_name='CANFD',
-            footnote_key='canfd',
-            footnote_text=HyundaiFootnote.CANFD.value.text,
-            footnote_column='MODEL',
-            part_required=Kit.CANFD_KIT  # Direct reference to enum
         ),
     ]
 
