@@ -45,6 +45,8 @@ def test_directory_structure():
         "opendbc/metadata/brand_metadata/hyundai/processor.py",  # Hyundai-specific processor
         "opendbc/metadata/brand_metadata/hyundai/attributes.py", # Hyundai-specific attributes
         "opendbc/metadata/brand_metadata/hyundai/footnotes.py",  # Hyundai-specific footnotes
+        "opendbc/metadata/brand_metadata/hyundai/generate_attributes.py", # Script to generate Hyundai attributes
+        "opendbc/metadata/brand_metadata/hyundai/extract_models.py", # Script to extract and compare models
     ]
     
     # Required test files
@@ -60,6 +62,7 @@ def test_directory_structure():
         "opendbc/metadata/tests/test_parts_definitions.py",      # Tests for parts definitions
         "opendbc/metadata/tests/test_brand_metadata/__init__.py", # Brand tests package
         "opendbc/metadata/tests/test_brand_metadata/test_parts_integration.py", # Tests for parts integration
+        "opendbc/metadata/tests/test_brand_metadata/test_model_consistency.py", # Tests for model consistency across all brands
         "opendbc/metadata/tests/test_brand_metadata/test_subaru/__init__.py",   # Subaru tests package
         "opendbc/metadata/tests/test_brand_metadata/test_subaru/test_processor.py", # Tests for Subaru processor
         "opendbc/metadata/tests/test_brand_metadata/test_subaru/test_footnotes.py", # Tests for Subaru footnotes
