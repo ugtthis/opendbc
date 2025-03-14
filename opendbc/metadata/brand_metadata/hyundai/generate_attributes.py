@@ -105,7 +105,7 @@ def generate_model_data() -> Dict[str, Dict[str, Any]]:
                 "explicit_parts": [],  # Initialize empty list for parts
                 "explicit_footnotes": [],  # Initialize empty list for footnotes
                 "support_type": "upstream",
-                "video_link": None,  # No video links for now
+                "video_link": f'"{model.video_link}"' if model.video_link else None,  # Properly quote if exists, otherwise None
                 "min_steer_speed": 0.0,  # Will be updated if MIN_STEER_32_MPH flag is present
                 "min_enable_speed": 0.0,
                 "auto_resume": True,
