@@ -45,8 +45,9 @@ def test_directory_structure():
         "opendbc/metadata/brand_metadata/hyundai/processor.py",  # Hyundai-specific processor
         "opendbc/metadata/brand_metadata/hyundai/attributes.py", # Hyundai-specific attributes
         "opendbc/metadata/brand_metadata/hyundai/footnotes.py",  # Hyundai-specific footnotes
-        "opendbc/metadata/brand_metadata/hyundai/generate_attributes.py", # Script to generate Hyundai attributes
-        "opendbc/metadata/brand_metadata/hyundai/extract_models.py", # Script to extract and compare models
+        "opendbc/metadata/brand_metadata/hyundai/scripts/__init__.py", # Hyundai scripts package
+        "opendbc/metadata/brand_metadata/hyundai/scripts/generate_attributes.py", # Script to generate Hyundai attributes
+        "opendbc/metadata/brand_metadata/hyundai/scripts/extract_models.py", # Script to extract and compare models
     ]
     
     # Required test files

@@ -192,7 +192,8 @@ def generate_attributes_file():
     content.append("}")
     
     # Write to file
-    file_path = os.path.join(os.path.dirname(__file__), "attributes.py")
+    # Update the file path to use the parent directory
+    file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "attributes.py")
     with open(file_path, "w") as f:
         f.write("\n".join(content))
 

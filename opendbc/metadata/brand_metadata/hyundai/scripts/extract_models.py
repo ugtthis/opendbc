@@ -67,6 +67,7 @@ def extract_models_from_values() -> Dict[str, List[CarModel]]:
 
 def extract_models_from_attributes() -> Dict[str, Dict[str, Any]]:
     """Extract all car models from attributes.py."""
+    # Updated import path to access attributes.py from the scripts directory
     from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
     return MODEL_DATA
 
