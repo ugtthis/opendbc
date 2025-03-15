@@ -69,6 +69,7 @@ def test_directory_structure():
         "opendbc/metadata/tests/test_brand_metadata/test_subaru/test_footnotes.py", # Tests for Subaru footnotes
         "opendbc/metadata/tests/test_brand_metadata/test_hyundai/__init__.py",      # Hyundai tests package
         "opendbc/metadata/tests/test_brand_metadata/test_hyundai/test_processor.py", # Tests for Hyundai processor
+        "opendbc/metadata/tests/test_brand_metadata/test_hyundai/test_attributes_generation.py", # Tests for Hyundai attributes generation
     ]
     
     # Check all required directories exist

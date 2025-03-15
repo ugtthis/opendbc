@@ -116,9 +116,16 @@ def test_flag_to_attribute_consistency():
                 # Check min_enable_speed - should be 0.0 by default unless specified otherwise
                 assert "min_enable_speed" in data, f"Model {model_id} is missing min_enable_speed field"
                 
-                # Check auto_resume - should be True by default
+                # Check auto_resume - should be based on min_enable_speed
                 assert "auto_resume" in data, f"Model {model_id} is missing auto_resume field"
-                assert data["auto_resume"] is True, f"Model {model_id} has incorrect auto_resume value"
+                min_enable_speed = data["min_enable_speed"]
+                # If min_enable_speed is a string with a conversion, evaluate it
+                if isinstance(min_enable_speed, str) and " * CV.MPH_TO_MS" in min_enable_speed:
+                    from opendbc.car.common.conversions import Conversions as CV
+                    min_enable_speed = eval(min_enable_speed)
+                
+                expected_auto_resume = min_enable_speed <= 0
+                assert data["auto_resume"] is expected_auto_resume, f"Model {model_id} has incorrect auto_resume value: expected {expected_auto_resume}, got {data['auto_resume']}"
                 
                 # Check visible_in_docs - should be True by default
                 assert "visible_in_docs" in data, f"Model {model_id} is missing visible_in_docs field"
@@ -203,3 +210,64 @@ def test_min_enable_speed_propagation():
         else:
             # If it's not using the explicit conversion, the value should match exactly
             assert abs(expected_speed - min_enable_speed_value) < 0.001, f"Model {model_id} has incorrect min_enable_speed: expected {expected_speed}, got {min_enable_speed_value}" 
+
+def test_auto_resume_propagation():
+    """Test that auto_resume is correctly propagated from the car documentation."""
+    # Import the generated attributes.py file to check the actual values
+    from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
+    from opendbc.car.common.conversions import Conversions as CV
+    
+    # Find models with auto_resume explicitly set in values.py
+    models_with_auto_resume = []
+    for platform in CAR:
+        if not hasattr(platform.config, 'car_docs'):
+            continue
+        
+        for doc in platform.config.car_docs:
+            if hasattr(doc, 'auto_resume') and doc.auto_resume is not None:
+                # Find the corresponding model in the generated data
+                model_name = doc.name
+                for model_id, data in MODEL_DATA.items():
+                    if model_name in model_id:
+                        models_with_auto_resume.append((model_id, doc.auto_resume, data["auto_resume"]))
+    
+    # If we found models with auto_resume explicitly set, check that they match
+    if models_with_auto_resume:
+        for model_id, expected_auto_resume, actual_auto_resume in models_with_auto_resume:
+            assert expected_auto_resume == actual_auto_resume, f"Model {model_id} has incorrect auto_resume: expected {expected_auto_resume}, got {actual_auto_resume}"
+    else:
+        # If we didn't find any models with auto_resume explicitly set, check that auto_resume is based on min_enable_speed
+        for model_id, data in MODEL_DATA.items():
+            min_enable_speed = data["min_enable_speed"]
+            # If min_enable_speed is a string with a conversion, evaluate it
+            if isinstance(min_enable_speed, str) and " * CV.MPH_TO_MS" in min_enable_speed:
+                min_enable_speed = eval(min_enable_speed)
+            
+            expected_auto_resume = min_enable_speed <= 0
+            assert data["auto_resume"] is expected_auto_resume, f"Model {model_id} has incorrect auto_resume: expected {expected_auto_resume} (based on min_enable_speed={min_enable_speed}), got {data['auto_resume']}"
+
+def test_min_enable_speed_auto_resume_relationship():
+    """Test that auto_resume is correctly set based on min_enable_speed.
+    
+    According to the logic in docs_definitions.py:
+    - If min_enable_speed > 0, auto_resume should be False
+    - If min_enable_speed = 0, auto_resume should be True
+    """
+    # Import the generated attributes.py file to check the actual values
+    from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
+    from opendbc.car.common.conversions import Conversions as CV
+    
+    # Check all models to verify the relationship between min_enable_speed and auto_resume
+    for model_id, data in MODEL_DATA.items():
+        min_enable_speed = data["min_enable_speed"]
+        auto_resume = data["auto_resume"]
+        
+        # If min_enable_speed is a string with a conversion, evaluate it
+        if isinstance(min_enable_speed, str) and " * CV.MPH_TO_MS" in min_enable_speed:
+            min_enable_speed = eval(min_enable_speed)
+        
+        # Check the relationship: min_enable_speed > 0 => auto_resume = False
+        if min_enable_speed > 0:
+            assert auto_resume is False, f"Model {model_id} has min_enable_speed={min_enable_speed} > 0 but auto_resume={auto_resume}. Expected auto_resume=False."
+        else:
+            assert auto_resume is True, f"Model {model_id} has min_enable_speed={min_enable_speed} = 0 but auto_resume={auto_resume}. Expected auto_resume=True." 
