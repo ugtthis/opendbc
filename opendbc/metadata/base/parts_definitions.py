@@ -15,7 +15,7 @@ class BasePart:
     name: str
     description: str = ""
     url: Optional[str] = None
-    category: str = "accessory"  # Default category
+    category: str = "accessory"
     parts: List['EnumBase'] = field(default_factory=list)
     
     def all_parts(self) -> List['EnumBase']:
@@ -69,7 +69,7 @@ class Harness(EnumBase):
     SUBARU_C = BasePart("Subaru C connector", "For 2022-24 Forester", category=Category.HARNESS)
     SUBARU_D = BasePart("Subaru D connector", "For 2023 Outback", category=Category.HARNESS)
     
-    # Hyundai harnesses - EXACT MATCH to docs_definitions.py
+    # Hyundai harnesses
     HYUNDAI_A = BasePart("Hyundai A connector", "For Hyundai/Kia vehicles (Type A)", category=Category.HARNESS)
     HYUNDAI_B = BasePart("Hyundai B connector", "For Hyundai/Kia vehicles (Type B)", category=Category.HARNESS)
     HYUNDAI_C = BasePart("Hyundai C connector", "For Hyundai/Kia vehicles (Type C)", category=Category.HARNESS)
@@ -88,25 +88,20 @@ class Harness(EnumBase):
     HYUNDAI_P = BasePart("Hyundai P connector", "For Hyundai/Kia vehicles (Type P)", category=Category.HARNESS)
     HYUNDAI_Q = BasePart("Hyundai Q connector", "For Hyundai/Kia vehicles (Type Q)", category=Category.HARNESS)
     HYUNDAI_R = BasePart("Hyundai R connector", "For Hyundai/Kia vehicles (Type R)", category=Category.HARNESS)
-    
-    # Other harnesses as needed...
 
 class Tool(EnumBase):
     """Tools needed for installation."""
     PRY_TOOL = BasePart("Pry Tool", "For removing interior trim pieces", category=Category.TOOL)
     SOCKET_8MM_DEEP = BasePart("Socket Wrench 8mm or 5/16\" (deep)", "For removing bolts during installation", category=Category.TOOL)
-    # Other tools as needed...
 
 class Kit(EnumBase):
     """Kits for special installations."""
     CANFD_KIT = BasePart("CAN FD panda kit", "Required for vehicles with CAN FD", category=Category.ACCESSORY)
-    # Other kits as needed...
 
 class Accessory(EnumBase):
     """Accessories for installation."""
     HARNESS_BOX = BasePart("Harness Box", "Protective box for the harness connection", category=Category.ACCESSORY)
     COMMA_POWER_V2 = BasePart("Comma Power V2", "Power management for comma devices", category=Category.ACCESSORY)
-    # Other accessories as needed...
 
 # Utility functions
 def get_part_by_name(name: str) -> Optional[EnumBase]:
