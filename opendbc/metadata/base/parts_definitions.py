@@ -103,10 +103,21 @@ class Accessory(EnumBase):
     HARNESS_BOX = BasePart("Harness Box", "Protective box for the harness connection", category=Category.ACCESSORY)
     COMMA_POWER_V2 = BasePart("Comma Power V2", "Power management for comma devices", category=Category.ACCESSORY)
 
+class Mount(EnumBase):
+    """Mounts for devices."""
+    REGULAR = BasePart("Regular Mount", "Standard mount for comma devices", category=Category.ACCESSORY)
+    ANGLED_8_DEGREES = BasePart("Angled Mount (8 degrees)", "Angled mount for vehicles requiring a tilted device", category=Category.ACCESSORY)
+
+class Device(EnumBase):
+    """Devices for vehicle integration."""
+    THREEX = BasePart("comma 3X", "Standard comma 3X device with regular mount", parts=[Mount.REGULAR], category=Category.ACCESSORY)
+    THREEX_ANGLED_MOUNT = BasePart("comma 3X with angled mount", "comma 3X device with 8-degree angled mount", parts=[Mount.ANGLED_8_DEGREES], category=Category.ACCESSORY)
+    RED_PANDA = BasePart("red panda", "CAN FD interface device", category=Category.ACCESSORY)
+
 # Utility functions
 def get_part_by_name(name: str) -> Optional[EnumBase]:
     """Find a part by its exact name."""
-    for enum_class in [Harness, Tool, Kit, Accessory]:
+    for enum_class in [Harness, Tool, Kit, Accessory, Mount, Device]:
         for part in enum_class:
             if part.name == name:
                 return part
@@ -115,6 +126,6 @@ def get_part_by_name(name: str) -> Optional[EnumBase]:
 def get_all_parts() -> List[EnumBase]:
     """Get a list of all defined parts."""
     all_parts = []
-    for enum_class in [Harness, Tool, Kit, Accessory]:
+    for enum_class in [Harness, Tool, Kit, Accessory, Mount, Device]:
         all_parts.extend(list(enum_class))
     return all_parts 

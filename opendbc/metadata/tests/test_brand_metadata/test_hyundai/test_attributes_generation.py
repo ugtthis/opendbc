@@ -127,6 +127,9 @@ def test_flag_to_attribute_consistency():
                 expected_auto_resume = min_enable_speed <= 0
                 assert data["auto_resume"] is expected_auto_resume, f"Model {model_id} has incorrect auto_resume value: expected {expected_auto_resume}, got {data['auto_resume']}"
                 
+                # Check angled_mount field exists
+                assert "angled_mount" in data, f"Model {model_id} is missing angled_mount field"
+                
                 # Check that platform field matches the platform string
                 assert data["platform"] == platform_str, f"Model {model_id} has incorrect platform value"
                 
@@ -266,4 +269,36 @@ def test_min_enable_speed_auto_resume_relationship():
         if min_enable_speed > 0:
             assert auto_resume is False, f"Model {model_id} has min_enable_speed={min_enable_speed} > 0 but auto_resume={auto_resume}. Expected auto_resume=False."
         else:
-            assert auto_resume is True, f"Model {model_id} has min_enable_speed={min_enable_speed} = 0 but auto_resume={auto_resume}. Expected auto_resume=True." 
+            assert auto_resume is True, f"Model {model_id} has min_enable_speed={min_enable_speed} = 0 but auto_resume={auto_resume}. Expected auto_resume=True."
+
+def test_angled_mount_propagation():
+    """Test that angled_mount is correctly set based on the car's parts.
+    
+    Models that use Device.threex_angled_mount should have angled_mount=True.
+    Models that use Device.threex should have angled_mount=False.
+    """
+    # Import the generated attributes.py file to check the actual values
+    from opendbc.metadata.brand_metadata.hyundai.attributes import MODEL_DATA
+    from opendbc.car.docs_definitions import Device
+    
+    # Find models with angled mounts in values.py
+    models_with_angled_mount = []
+    for platform in CAR:
+        if not hasattr(platform.config, 'car_parts'):
+            continue
+            
+        if platform.config.car_parts and Device.threex_angled_mount in platform.config.car_parts.parts:
+            # Find the corresponding model in the generated data
+            for model_id, data in MODEL_DATA.items():
+                if data["platform"] == str(platform):
+                    models_with_angled_mount.append(model_id)
+    
+    # Check that all models with angled mounts have angled_mount=True
+    for model_id in models_with_angled_mount:
+        assert MODEL_DATA[model_id]["angled_mount"] is True, f"Model {model_id} should have angled_mount=True"
+        assert "Device.THREEX_ANGLED_MOUNT" in MODEL_DATA[model_id]["explicit_parts"], f"Model {model_id} is missing Device.THREEX_ANGLED_MOUNT in explicit_parts"
+    
+    # Check that all other models have angled_mount=False
+    for model_id, data in MODEL_DATA.items():
+        if model_id not in models_with_angled_mount:
+            assert data["angled_mount"] is False, f"Model {model_id} should have angled_mount=False" 

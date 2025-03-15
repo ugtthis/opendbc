@@ -10,9 +10,9 @@ import os
 from typing import Dict, List, Any
 from dataclasses import dataclass
 from opendbc.car.hyundai.values import CAR, HyundaiCanFDPlatformConfig, HyundaiFlags
-from opendbc.car.docs_definitions import CarDocs, CarHarness
+from opendbc.car.docs_definitions import CarDocs, CarHarness, Device
 from opendbc.car.common.conversions import Conversions as CV
-from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit
+from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit, Device as MetadataDevice
 
 @dataclass
 class CarModel:
@@ -139,6 +139,7 @@ def generate_model_data() -> Dict[str, Dict[str, Any]]:
                 "min_steer_speed": 0.0,  # Will be updated if MIN_STEER_32_MPH flag is present
                 "min_enable_speed": f"{model.min_enable_speed_mph} * CV.MPH_TO_MS" if model.min_enable_speed_mph else model.min_enable_speed,
                 "auto_resume": model.auto_resume,
+                "angled_mount": False,  # Default to False, will be updated if needed
             }
             
             # Add parts from car_parts first
@@ -146,6 +147,17 @@ def generate_model_data() -> Dict[str, Dict[str, Any]]:
                 # Handle multiple harnesses (e.g., "A and K")
                 for harness_letter in model.harness.split(" and "):
                     model_data[model_id]["explicit_parts"].append(f"Harness.HYUNDAI_{harness_letter}")
+            
+            # Check if the model uses an angled mount
+            if hasattr(CAR, model.platform):
+                car_config = getattr(CAR, model.platform)
+                if hasattr(car_config.config, 'car_parts') and car_config.config.car_parts:
+                    for part in car_config.config.car_parts.parts:
+                        if part == Device.threex_angled_mount:
+                            model_data[model_id]["angled_mount"] = True
+                            model_data[model_id]["explicit_parts"].append("Device.THREEX_ANGLED_MOUNT")
+                        elif part == Device.threex:
+                            model_data[model_id]["explicit_parts"].append("Device.THREEX")
             
             # Add CAN FD kit for CAN FD platforms
             if hasattr(CAR, model.platform):
@@ -220,7 +232,8 @@ def generate_attributes_file():
         content.append(f'        "video_link": {data["video_link"]},')
         content.append(f'        "min_steer_speed": {data["min_steer_speed"]},')
         content.append(f'        "min_enable_speed": {data["min_enable_speed"]},')
-        content.append(f'        "auto_resume": {data["auto_resume"]}')
+        content.append(f'        "auto_resume": {data["auto_resume"]},')
+        content.append(f'        "angled_mount": {data["angled_mount"]}')
         content.append('    },')
     
     content.append("}")
