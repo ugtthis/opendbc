@@ -11,6 +11,7 @@ from typing import Dict, List, Any
 from dataclasses import dataclass
 from opendbc.car.hyundai.values import CAR, HyundaiCanFDPlatformConfig, HyundaiFlags
 from opendbc.car.docs_definitions import CarDocs, CarHarness
+from opendbc.car.common.conversions import Conversions as CV
 from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit
 
 @dataclass
@@ -23,6 +24,8 @@ class CarModel:
     platform: str
     video_link: str = None
     make: str = None
+    min_enable_speed: float = 0.0
+    min_enable_speed_mph: float = None  # Original mph value if using conversion
 
 def extract_models_from_values() -> Dict[str, List[CarModel]]:
     """Extract all car models from values.py."""
@@ -59,6 +62,19 @@ def extract_models_from_values() -> Dict[str, List[CarModel]]:
             harness = ' and '.join(harnesses) if harnesses else None
             
             make = name_without_years.split()[0]
+            
+            # Try to determine if min_enable_speed is using the mph conversion
+            min_enable_speed = 0.0
+            min_enable_speed_mph = None
+            if hasattr(doc, 'min_enable_speed') and doc.min_enable_speed is not None:
+                min_enable_speed = doc.min_enable_speed
+                # Check if it's likely a conversion from mph
+                # Common values are 19 mph (8.49376 m/s) and 5 mph (2.2352 m/s)
+                if abs(min_enable_speed - 8.49376) < 0.001:
+                    min_enable_speed_mph = 19.0
+                elif abs(min_enable_speed - 2.2352) < 0.001:
+                    min_enable_speed_mph = 5.0
+            
             model = CarModel(
                 name=name_without_years,
                 years=years,
@@ -66,7 +82,9 @@ def extract_models_from_values() -> Dict[str, List[CarModel]]:
                 harness=harness,
                 platform=str(platform),
                 video_link=doc.video_link,
-                make=make
+                make=make,
+                min_enable_speed=min_enable_speed,
+                min_enable_speed_mph=min_enable_speed_mph
             )
             
             if make not in models:
@@ -107,7 +125,7 @@ def generate_model_data() -> Dict[str, Dict[str, Any]]:
                 "support_type": "upstream",
                 "video_link": f'"{model.video_link}"' if model.video_link else None,
                 "min_steer_speed": 0.0,  # Will be updated if MIN_STEER_32_MPH flag is present
-                "min_enable_speed": 0.0,
+                "min_enable_speed": f"{model.min_enable_speed_mph} * CV.MPH_TO_MS" if model.min_enable_speed_mph else model.min_enable_speed,
                 "auto_resume": True,
                 "visible_in_docs": True
             }
@@ -170,6 +188,7 @@ def generate_attributes_file():
         "",
         "from typing import Dict, Any",
         "from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit",
+        "from opendbc.car.common.conversions import Conversions as CV",
         "",
         "# ===== MODEL DATA =====",
         "",
