@@ -130,13 +130,18 @@ def generate_model_data() -> Dict[str, Dict[str, Any]]:
                 model_data[model_id]["explicit_footnotes"].append("scc")
             
             # Add radar SCC footnote for platforms with radar SCC
-            if "RADAR_SCC" in model.platform:
-                model_data[model_id]["explicit_footnotes"].append("radar_scc")
+            if hasattr(CAR, model.platform):
+                car_config = getattr(CAR, model.platform)
+                if hasattr(car_config.config, 'flags') and car_config.config.flags & HyundaiFlags.RADAR_SCC:
+                    model_data[model_id]["explicit_footnotes"].append("radar_scc")
             
             # Add min speed footnote for platforms with min speed requirement
-            if "MIN_STEER_32_MPH" in model.platform:
-                model_data[model_id]["explicit_footnotes"].append("min_speed")
-                model_data[model_id]["min_steer_speed"] = 32 * 0.44704  # 32 mph in m/s
+            # Check if the platform has the MIN_STEER_32_MPH flag set
+            if hasattr(CAR, model.platform):
+                car_config = getattr(CAR, model.platform)
+                if hasattr(car_config.config, 'flags') and car_config.config.flags & HyundaiFlags.MIN_STEER_32_MPH:
+                    model_data[model_id]["explicit_footnotes"].append("min_speed")
+                    model_data[model_id]["min_steer_speed"] = 32 * 0.44704  # 32 mph in m/s
     
     return model_data
 
