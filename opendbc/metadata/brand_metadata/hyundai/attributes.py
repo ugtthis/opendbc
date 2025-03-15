@@ -25,8 +25,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Azera Hybrid 2019": {
         "make": "Hyundai",
@@ -40,8 +39,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Azera Hybrid 2020": {
         "make": "Hyundai",
@@ -55,8 +53,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Custin 2023": {
         "make": "Hyundai",
@@ -70,8 +67,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Elantra 2017-18": {
         "make": "Hyundai",
@@ -85,8 +81,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Hyundai Elantra 2019": {
         "make": "Hyundai",
@@ -100,8 +95,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Hyundai Elantra 2021-23": {
         "make": "Hyundai",
@@ -115,8 +109,7 @@ MODEL_DATA = {
         "video_link": "https://youtu.be/_EdYQtV52-c",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Elantra GT 2017-20": {
         "make": "Hyundai",
@@ -130,8 +123,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Elantra Hybrid 2021-23": {
         "make": "Hyundai",
@@ -145,8 +137,7 @@ MODEL_DATA = {
         "video_link": "https://youtu.be/_EdYQtV52-c",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Genesis 2015-16": {
         "make": "Hyundai",
@@ -160,8 +151,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Hyundai Ioniq 5 (Southeast Asia and Europe only) 2022-24": {
         "make": "Hyundai",
@@ -175,8 +165,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq 5 (with HDA II) 2022-24": {
         "make": "Hyundai",
@@ -190,8 +179,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq 5 (without HDA II) 2022-24": {
         "make": "Hyundai",
@@ -205,8 +193,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq 6 (with HDA II) 2023-24": {
         "make": "Hyundai",
@@ -220,8 +207,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq Electric 2019": {
         "make": "Hyundai",
@@ -235,8 +221,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq Electric 2020": {
         "make": "Hyundai",
@@ -250,8 +235,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq Hybrid 2017-19": {
         "make": "Hyundai",
@@ -265,8 +249,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq Hybrid 2020-22": {
         "make": "Hyundai",
@@ -280,8 +263,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq Plug-in Hybrid 2019": {
         "make": "Hyundai",
@@ -295,8 +277,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Ioniq Plug-in Hybrid 2020-22": {
         "make": "Hyundai",
@@ -310,8 +291,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Kona 2020": {
         "make": "Hyundai",
@@ -325,8 +305,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 2.68224,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Hyundai Kona 2022": {
         "make": "Hyundai",
@@ -340,8 +319,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Kona Electric 2018-21": {
         "make": "Hyundai",
@@ -355,8 +333,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Kona Electric 2022-23": {
         "make": "Hyundai",
@@ -370,8 +347,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Kona Electric (with HDA II, Korea only) 2023": {
         "make": "Hyundai",
@@ -385,8 +361,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=U2fOCmcQ8hw",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Kona Hybrid 2020": {
         "make": "Hyundai",
@@ -400,8 +375,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Nexo 2021": {
         "make": "Hyundai",
@@ -415,8 +389,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Palisade 2020-22": {
         "make": "Hyundai",
@@ -430,8 +403,7 @@ MODEL_DATA = {
         "video_link": "https://youtu.be/TAnDqjF4fDY?t=456",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Santa Cruz 2022-24": {
         "make": "Hyundai",
@@ -445,8 +417,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Santa Fe 2019-20": {
         "make": "Hyundai",
@@ -460,8 +431,7 @@ MODEL_DATA = {
         "video_link": "https://youtu.be/bjDR0YjM__s",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Santa Fe 2021-23": {
         "make": "Hyundai",
@@ -475,8 +445,7 @@ MODEL_DATA = {
         "video_link": "https://youtu.be/VnHzSTygTS4",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Santa Fe Hybrid 2022-23": {
         "make": "Hyundai",
@@ -490,8 +459,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Santa Fe Plug-in Hybrid 2022-23": {
         "make": "Hyundai",
@@ -505,8 +473,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Sonata 2020-23": {
         "make": "Hyundai",
@@ -520,8 +487,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=ix63r9kE3Fw",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Sonata 2018-19": {
         "make": "Hyundai",
@@ -535,8 +501,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Sonata Hybrid 2020-23": {
         "make": "Hyundai",
@@ -550,8 +515,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Staria 2023": {
         "make": "Hyundai",
@@ -565,8 +529,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Tucson 2021": {
         "make": "Hyundai",
@@ -580,8 +543,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Hyundai Tucson 2022": {
         "make": "Hyundai",
@@ -595,8 +557,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Tucson 2023-24": {
         "make": "Hyundai",
@@ -610,8 +571,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Tucson Diesel 2019": {
         "make": "Hyundai",
@@ -625,8 +585,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Tucson Hybrid 2022-24": {
         "make": "Hyundai",
@@ -640,8 +599,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Tucson Plug-in Hybrid 2024": {
         "make": "Hyundai",
@@ -655,8 +613,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Hyundai Veloster 2019-20": {
         "make": "Hyundai",
@@ -670,8 +627,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 5.0 * CV.MPH_TO_MS,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Hyundai i30 2017-19": {
         "make": "Hyundai",
@@ -685,8 +641,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Carnival 2022-24": {
         "make": "Kia",
@@ -700,8 +655,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Carnival (China only) 2023": {
         "make": "Kia",
@@ -715,8 +669,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Ceed 2019-21": {
         "make": "Kia",
@@ -730,8 +683,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia EV6 (Southeast Asia only) 2022-24": {
         "make": "Kia",
@@ -745,8 +697,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia EV6 (with HDA II) 2022-24": {
         "make": "Kia",
@@ -760,8 +711,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia EV6 (without HDA II) 2022-24": {
         "make": "Kia",
@@ -775,8 +725,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Forte 2019-21": {
         "make": "Kia",
@@ -790,8 +739,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 2.68224,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Kia Forte 2022-23": {
         "make": "Kia",
@@ -805,8 +753,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia K5 2021-24": {
         "make": "Kia",
@@ -820,8 +767,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia K5 Hybrid 2020-22": {
         "make": "Kia",
@@ -835,8 +781,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia K8 Hybrid (with HDA II) 2023": {
         "make": "Kia",
@@ -850,8 +795,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro EV 2019": {
         "make": "Kia",
@@ -865,8 +809,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=lT7zcG6ZpGo",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro EV 2020": {
         "make": "Kia",
@@ -880,8 +823,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=lT7zcG6ZpGo",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro EV 2021": {
         "make": "Kia",
@@ -895,8 +837,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=lT7zcG6ZpGo",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro EV 2022": {
         "make": "Kia",
@@ -910,8 +851,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=lT7zcG6ZpGo",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro EV 2023": {
         "make": "Kia",
@@ -925,8 +865,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro Hybrid 2018": {
         "make": "Kia",
@@ -940,8 +879,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 4.470400000000001,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Kia Niro Hybrid 2021": {
         "make": "Kia",
@@ -955,8 +893,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro Hybrid 2022": {
         "make": "Kia",
@@ -970,8 +907,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro Hybrid 2023": {
         "make": "Kia",
@@ -985,8 +921,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro Plug-in Hybrid 2018-19": {
         "make": "Kia",
@@ -1000,8 +935,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 4.470400000000001,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Kia Niro Plug-in Hybrid 2020": {
         "make": "Kia",
@@ -1015,8 +949,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro Plug-in Hybrid 2021": {
         "make": "Kia",
@@ -1030,8 +963,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Niro Plug-in Hybrid 2022": {
         "make": "Kia",
@@ -1045,8 +977,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Optima 2017": {
         "make": "Kia",
@@ -1060,8 +991,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Optima 2019-20": {
         "make": "Kia",
@@ -1075,8 +1005,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Optima Hybrid 2017": {
         "make": "Kia",
@@ -1090,8 +1019,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Optima Hybrid 2019": {
         "make": "Kia",
@@ -1105,8 +1033,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Seltos 2021": {
         "make": "Kia",
@@ -1120,8 +1047,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Sorento 2018": {
         "make": "Kia",
@@ -1135,8 +1061,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=Fkh3s6WHJz8",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Sorento 2019": {
         "make": "Kia",
@@ -1150,8 +1075,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=Fkh3s6WHJz8",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Sorento 2021-23": {
         "make": "Kia",
@@ -1165,8 +1089,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Sorento Hybrid 2021-23": {
         "make": "Kia",
@@ -1180,8 +1103,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Sorento Plug-in Hybrid 2022-23": {
         "make": "Kia",
@@ -1195,8 +1117,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Sportage 2023-24": {
         "make": "Kia",
@@ -1210,8 +1131,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Sportage Hybrid 2023": {
         "make": "Kia",
@@ -1225,8 +1145,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Stinger 2018-20": {
         "make": "Kia",
@@ -1240,8 +1159,7 @@ MODEL_DATA = {
         "video_link": "https://www.youtube.com/watch?v=MJ94qoofYw0",
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Stinger 2022-23": {
         "make": "Kia",
@@ -1255,8 +1173,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Kia Telluride 2020-22": {
         "make": "Kia",
@@ -1270,8 +1187,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis G70 2018": {
         "make": "Genesis",
@@ -1285,8 +1201,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis G70 2019-21": {
         "make": "Genesis",
@@ -1300,8 +1215,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis G70 2022-23": {
         "make": "Genesis",
@@ -1315,8 +1229,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis G80 2017": {
         "make": "Genesis",
@@ -1330,8 +1243,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": False,
-        "visible_in_docs": True
+        "auto_resume": False
     },
     "Genesis G80 2018-19": {
         "make": "Genesis",
@@ -1345,8 +1257,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis G80 (2.5T Advanced Trim, with HDA II) 2024": {
         "make": "Genesis",
@@ -1360,8 +1271,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis G90 2017-20": {
         "make": "Genesis",
@@ -1375,8 +1285,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis GV60 (Advanced Trim) 2023": {
         "make": "Genesis",
@@ -1390,8 +1299,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis GV60 (Performance Trim) 2022-23": {
         "make": "Genesis",
@@ -1405,8 +1313,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis GV70 (2.5T Trim, without HDA II) 2022-24": {
         "make": "Genesis",
@@ -1420,8 +1327,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis GV70 (3.5T Trim, without HDA II) 2022-23": {
         "make": "Genesis",
@@ -1435,8 +1341,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis GV70 Electrified (Australia Only) 2022": {
         "make": "Genesis",
@@ -1450,8 +1355,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis GV70 Electrified (with HDA II) 2023-24": {
         "make": "Genesis",
@@ -1465,8 +1369,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
     "Genesis GV80 2023": {
         "make": "Genesis",
@@ -1480,7 +1383,6 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 0.0,
-        "auto_resume": True,
-        "visible_in_docs": True
+        "auto_resume": True
     },
 }

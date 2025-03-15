@@ -16,8 +16,7 @@ def get_model_data(model_data_dict: Dict[str, Dict[str, Any]], model_id: str) ->
 
 def get_visible_models(model_data_dict: Dict[str, Dict[str, Any]]) -> List[str]:
     """Get a list of all models that should be visible in documentation."""
-    return [model_id for model_id, data in model_data_dict.items() 
-            if data.get("visible_in_docs", True)]
+    return [model_id for model_id, data in model_data_dict.items()]
 
 def get_model_by_platform(model_data_dict: Dict[str, Dict[str, Any]], platform: str) -> Optional[str]:
     """Get the model ID for a specific platform."""

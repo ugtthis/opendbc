@@ -139,7 +139,6 @@ def generate_model_data() -> Dict[str, Dict[str, Any]]:
                 "min_steer_speed": 0.0,  # Will be updated if MIN_STEER_32_MPH flag is present
                 "min_enable_speed": f"{model.min_enable_speed_mph} * CV.MPH_TO_MS" if model.min_enable_speed_mph else model.min_enable_speed,
                 "auto_resume": model.auto_resume,
-                "visible_in_docs": True
             }
             
             # Add parts from car_parts first
@@ -221,8 +220,7 @@ def generate_attributes_file():
         content.append(f'        "video_link": {data["video_link"]},')
         content.append(f'        "min_steer_speed": {data["min_steer_speed"]},')
         content.append(f'        "min_enable_speed": {data["min_enable_speed"]},')
-        content.append(f'        "auto_resume": {data["auto_resume"]},')
-        content.append(f'        "visible_in_docs": {data["visible_in_docs"]}')
+        content.append(f'        "auto_resume": {data["auto_resume"]}')
         content.append('    },')
     
     content.append("}")

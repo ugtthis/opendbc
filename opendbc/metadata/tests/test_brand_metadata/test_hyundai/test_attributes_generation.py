@@ -127,10 +127,6 @@ def test_flag_to_attribute_consistency():
                 expected_auto_resume = min_enable_speed <= 0
                 assert data["auto_resume"] is expected_auto_resume, f"Model {model_id} has incorrect auto_resume value: expected {expected_auto_resume}, got {data['auto_resume']}"
                 
-                # Check visible_in_docs - should be True by default
-                assert "visible_in_docs" in data, f"Model {model_id} is missing visible_in_docs field"
-                assert data["visible_in_docs"] is True, f"Model {model_id} has incorrect visible_in_docs value"
-                
                 # Check that platform field matches the platform string
                 assert data["platform"] == platform_str, f"Model {model_id} has incorrect platform value"
                 
