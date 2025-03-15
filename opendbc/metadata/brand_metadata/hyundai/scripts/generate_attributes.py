@@ -26,6 +26,7 @@ class CarModel:
     make: str = None
     min_enable_speed: float = 0.0
     min_enable_speed_mph: float = None  # Original mph value if using conversion
+    auto_resume: bool = True  # Default to True if not specified
 
 def extract_models_from_values() -> Dict[str, List[CarModel]]:
     """Extract all car models from values.py."""
@@ -75,6 +76,16 @@ def extract_models_from_values() -> Dict[str, List[CarModel]]:
                 elif abs(min_enable_speed - 2.2352) < 0.001:
                     min_enable_speed_mph = 5.0
             
+            # Get auto_resume value from car documentation
+            auto_resume = True  # Default to True if not specified
+            if hasattr(doc, 'auto_resume') and doc.auto_resume is not None:
+                auto_resume = doc.auto_resume
+            else:
+                # If not explicitly set, follow the logic in docs_definitions.py:
+                # auto_resume = autoResumeSng and min_enable_speed <= 0
+                # For Hyundai, autoResumeSng is likely True (the default)
+                auto_resume = min_enable_speed <= 0
+            
             model = CarModel(
                 name=name_without_years,
                 years=years,
@@ -84,7 +95,8 @@ def extract_models_from_values() -> Dict[str, List[CarModel]]:
                 video_link=doc.video_link,
                 make=make,
                 min_enable_speed=min_enable_speed,
-                min_enable_speed_mph=min_enable_speed_mph
+                min_enable_speed_mph=min_enable_speed_mph,
+                auto_resume=auto_resume
             )
             
             if make not in models:
@@ -126,7 +138,7 @@ def generate_model_data() -> Dict[str, Dict[str, Any]]:
                 "video_link": f'"{model.video_link}"' if model.video_link else None,
                 "min_steer_speed": 0.0,  # Will be updated if MIN_STEER_32_MPH flag is present
                 "min_enable_speed": f"{model.min_enable_speed_mph} * CV.MPH_TO_MS" if model.min_enable_speed_mph else model.min_enable_speed,
-                "auto_resume": True,
+                "auto_resume": model.auto_resume,
                 "visible_in_docs": True
             }
             

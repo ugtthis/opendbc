@@ -85,7 +85,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Hyundai Elantra 2019": {
@@ -100,7 +100,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Hyundai Elantra 2021-23": {
@@ -160,7 +160,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Hyundai Ioniq 5 (Southeast Asia and Europe only) 2022-24": {
@@ -325,7 +325,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 2.68224,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Hyundai Kona 2022": {
@@ -580,7 +580,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Hyundai Tucson 2022": {
@@ -670,7 +670,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 5.0 * CV.MPH_TO_MS,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Hyundai i30 2017-19": {
@@ -790,7 +790,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 2.68224,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Kia Forte 2022-23": {
@@ -940,7 +940,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 4.470400000000001,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Kia Niro Hybrid 2021": {
@@ -1000,7 +1000,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 14.30528,
         "min_enable_speed": 4.470400000000001,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Kia Niro Plug-in Hybrid 2020": {
@@ -1330,7 +1330,7 @@ MODEL_DATA = {
         "video_link": None,
         "min_steer_speed": 0.0,
         "min_enable_speed": 19.0 * CV.MPH_TO_MS,
-        "auto_resume": True,
+        "auto_resume": False,
         "visible_in_docs": True
     },
     "Genesis G80 2018-19": {
