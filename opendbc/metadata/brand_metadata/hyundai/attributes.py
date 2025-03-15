@@ -8,6 +8,7 @@ Footnotes have been moved to footnotes.py and helper functions to base/model_hel
 
 from typing import Dict, Any
 from opendbc.metadata.base.parts_definitions import Harness, Tool, Kit
+from opendbc.car.common.conversions import Conversions as CV
 
 # ===== MODEL DATA =====
 
@@ -83,7 +84,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 14.30528,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 19.0 * CV.MPH_TO_MS,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -98,7 +99,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 14.30528,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 19.0 * CV.MPH_TO_MS,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -158,7 +159,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 19.0 * CV.MPH_TO_MS,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -323,7 +324,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 2.68224,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -578,7 +579,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 19.0 * CV.MPH_TO_MS,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -668,7 +669,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 5.0 * CV.MPH_TO_MS,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -788,7 +789,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 2.68224,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -938,7 +939,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 14.30528,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 4.470400000000001,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -998,7 +999,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 14.30528,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 4.470400000000001,
         "auto_resume": True,
         "visible_in_docs": True
     },
@@ -1328,7 +1329,7 @@ MODEL_DATA = {
         "support_type": "upstream",
         "video_link": None,
         "min_steer_speed": 0.0,
-        "min_enable_speed": 0.0,
+        "min_enable_speed": 19.0 * CV.MPH_TO_MS,
         "auto_resume": True,
         "visible_in_docs": True
     },
