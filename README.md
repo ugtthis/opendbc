@@ -18,7 +18,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![X Follow](https://img.shields.io/twitter/follow/comma_ai)](https://x.com/comma_ai)
 [![Discord](https://img.shields.io/discord/469524606043160576)](https://discord.comma.ai)
-
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ugtthis/opendbc)
 </div>
 
 ---
