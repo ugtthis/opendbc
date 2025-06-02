@@ -25,11 +25,15 @@ class Column(Enum):
   SETUP_VIDEO = "Setup Video"
 
 
-class ExtraCarsColumn(Enum):
+class BasicInfoColumn(Enum):
   MAKE = "Make"
   MODEL = "Model"
   PACKAGE = "Package"
   SUPPORT = "Support Level"
+
+
+# REMOVE after name transition
+ExtraCarsColumn = BasicInfoColumn
 
 
 class SupportType(Enum):
@@ -343,12 +347,15 @@ class CarDocs:
     else:
       support_info = self.support_type.value
 
-    self.extra_cars_row: dict[Enum, str] = {
-      ExtraCarsColumn.MAKE: self.make,
-      ExtraCarsColumn.MODEL: self.model,
-      ExtraCarsColumn.PACKAGE: self.package,
-      ExtraCarsColumn.SUPPORT: support_info,
+    self.basic_info_row: dict[Enum, str] = {
+      BasicInfoColumn.MAKE: self.make,
+      BasicInfoColumn.MODEL: self.model,
+      BasicInfoColumn.PACKAGE: self.package,
+      BasicInfoColumn.SUPPORT: support_info,
     }
+
+    # REMOVE after name transition
+    self.extra_cars_row = self.basic_info_row
 
     # Set steering torque star from max lateral acceleration
     assert CP.maxLateralAccel > 0.1
@@ -411,9 +418,13 @@ class CarDocs:
 
     return item
 
-  def get_extra_cars_column(self, column: ExtraCarsColumn) -> str:
-    item: str = self.extra_cars_row[column]
-    if column == ExtraCarsColumn.MODEL and len(self.years):
+  def get_basic_info_column(self, column: BasicInfoColumn) -> str:
+    item: str = self.basic_info_row[column]
+    if column == BasicInfoColumn.MODEL and len(self.years):
       item += f" {self.years}"
 
     return item
+
+  # REMOVE after name transition
+  def get_extra_cars_column(self, column) -> str:
+    return self.get_basic_info_column(column)

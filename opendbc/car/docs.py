@@ -11,7 +11,7 @@ from natsort import natsorted
 from opendbc.car.common.basedir import BASEDIR
 from opendbc.car import gen_empty_fingerprint
 from opendbc.car.structs import CarParams
-from opendbc.car.docs_definitions import BaseCarHarness, CarDocs, Device, Column, ExtraCarsColumn, CommonFootnote, PartType, SupportType
+from opendbc.car.docs_definitions import BaseCarHarness, CarDocs, Device, Column, BasicInfoColumn, ExtraCarsColumn, CommonFootnote, PartType, SupportType
 from opendbc.car.car_helpers import interfaces
 from opendbc.car.interfaces import get_interface_attr
 from opendbc.car.values import Platform
@@ -19,13 +19,22 @@ from opendbc.car.mock.values import CAR as MOCK
 from opendbc.car.extra_cars import CAR as EXTRA
 
 
-EXTRA_CARS_MD_OUT = os.path.join(BASEDIR, "../", "../", "docs", "CARS.md")
-EXTRA_CARS_MD_TEMPLATE = os.path.join(BASEDIR, "CARS_template.md")
+BASIC_INFO_MD_OUT = os.path.join(BASEDIR, "../", "../", "docs", "CARS.md")
+BASIC_INFO_MD_TEMPLATE = os.path.join(BASEDIR, "CARS_template.md")
+
+# REMOVE after name transition
+EXTRA_CARS_MD_OUT = BASIC_INFO_MD_OUT
+EXTRA_CARS_MD_TEMPLATE = BASIC_INFO_MD_TEMPLATE
 
 # TODO: merge these platforms into normal car ports with SupportType flag
 ExtraPlatform = Platform | EXTRA
 EXTRA_BRANDS = get_args(ExtraPlatform)
 EXTRA_PLATFORMS: dict[str, ExtraPlatform] = {str(platform): platform for brand in EXTRA_BRANDS for platform in brand}
+
+# REMOVE after name transition
+AllPlatforms = ExtraPlatform
+ALL_BRANDS = EXTRA_BRANDS
+ALL_PLATFORMS = EXTRA_PLATFORMS
 
 
 def get_params_for_docs(platform) -> CarParams:
@@ -86,8 +95,8 @@ def generate_cars_md(all_car_docs: list[CarDocs], template_fn: str, **kwargs) ->
   footnotes = [fn.value.text for fn in get_all_footnotes()]
   cars_md: str = template.render(all_car_docs=all_car_docs, PartType=PartType,
                                  group_by_make=group_by_make, footnotes=footnotes,
-                                 Device=Device, Column=Column, ExtraCarsColumn=ExtraCarsColumn,
-                                 BaseCarHarness=BaseCarHarness, SupportType=SupportType,
+                                 Device=Device, Column=Column, BasicInfoColumn=BasicInfoColumn,
+                                 ExtraCarsColumn=ExtraCarsColumn, BaseCarHarness=BaseCarHarness, SupportType=SupportType,
                                  **kwargs)
   return cars_md
 
@@ -96,8 +105,8 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(description="Auto generates supportability info docs for all known cars",
                                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-  parser.add_argument("--template", default=EXTRA_CARS_MD_TEMPLATE, help="Override default template filename")
-  parser.add_argument("--out", default=EXTRA_CARS_MD_OUT, help="Override default generated filename")
+  parser.add_argument("--template", default=BASIC_INFO_MD_TEMPLATE, help="Override default template filename")
+  parser.add_argument("--out", default=BASIC_INFO_MD_OUT, help="Override default generated filename")
   args = parser.parse_args()
 
   with open(args.out, 'w') as f:

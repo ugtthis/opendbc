@@ -2,10 +2,10 @@
 
 # Support Information for {{all_car_docs | length}} Known Cars
 
-|{{ExtraCarsColumn | map(attribute='value') | join('|') | replace(hardware_col_name, wide_hardware_col_name)}}|
-|---|---|---|{% for _ in range((ExtraCarsColumn | length) - 3) %}{{':---:|'}}{% endfor +%}
+|{{BasicInfoColumn | map(attribute='value') | join('|') | replace(hardware_col_name, wide_hardware_col_name)}}|
+|---|---|---|{% for _ in range((BasicInfoColumn | length) - 3) %}{{':---:|'}}{% endfor +%}
 {% for car_docs in all_car_docs %}
-|{% for column in ExtraCarsColumn %}{{car_docs.get_extra_cars_column(column)}}|{% endfor %}
+|{% for column in BasicInfoColumn %}{{car_docs.get_basic_info_column(column)}}|{% endfor %}
 
 {% endfor %}
 
