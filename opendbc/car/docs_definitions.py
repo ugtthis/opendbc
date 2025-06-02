@@ -418,11 +418,3 @@ class CarDocs:
       item += f" {self.years}"
 
     return item
-
-
-@dataclass
-class ExtraCarDocs(CarDocs):
-  package: str = "Any"
-  merged: bool = False
-  support_type: SupportType = SupportType.INCOMPATIBLE
-  support_link: str | None = "#incompatible"

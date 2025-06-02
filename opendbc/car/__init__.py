@@ -6,7 +6,7 @@ from dataclasses import replace
 
 from opendbc.car import structs, uds
 from opendbc.car.can_definitions import CanData
-from opendbc.car.docs_definitions import CarDocs, ExtraCarDocs
+from opendbc.car.docs_definitions import CarDocs
 
 DT_CTRL = 0.01  # car state and control loop timestep (s)
 
@@ -290,7 +290,7 @@ class Freezable:
 
 @dataclass(order=True)
 class PlatformConfigBase(Freezable):
-  car_docs: list[CarDocs] | list[ExtraCarDocs]
+  car_docs: list[CarDocs]
   specs: CarSpecs
 
   dbc_dict: DbcDict
@@ -321,7 +321,7 @@ class PlatformConfig(PlatformConfigBase):
 
 @dataclass(order=True)
 class ExtraPlatformConfig(PlatformConfigBase):
-  car_docs: list[ExtraCarDocs]
+  car_docs: list[CarDocs]
   specs: CarSpecs = CarSpecs(mass=0., wheelbase=0., steerRatio=0.)
   dbc_dict: DbcDict = field(default_factory=lambda: dict())
 
