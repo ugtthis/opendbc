@@ -265,7 +265,6 @@ class CarDocs:
   # all the parts needed for the supported car
   car_parts: CarParts = field(default_factory=CarParts)
 
-  merged: bool = True
   support_type: SupportType = SupportType.UPSTREAM
   support_link: str | None = "#upstream"
 
@@ -277,11 +276,11 @@ class CarDocs:
     self.brand = CP.brand
     self.car_fingerprint = CP.carFingerprint
 
-    if self.merged and CP.dashcamOnly:
-      if self.support_type != SupportType.REVIEW:
+    if CP.dashcamOnly:
+      if self.support_type in (SupportType.UPSTREAM, SupportType.CUSTOM):
         self.support_type = SupportType.DASHCAM
         self.support_link = "#dashcam"
-      else:
+      elif self.support_type == SupportType.REVIEW:
         self.support_link = "#under-review"
 
     # longitudinal column
