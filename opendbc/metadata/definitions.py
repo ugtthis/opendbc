@@ -3,6 +3,7 @@ from collections import namedtuple
 import copy
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Dict, Optional
 
 from opendbc.car.common.conversions import Conversions as CV
 from opendbc.car.structs import CarParams
@@ -426,3 +427,34 @@ class ExtraCarDocs(CarDocs):
   merged: bool = False
   support_type: SupportType = SupportType.INCOMPATIBLE
   support_link: str | None = "#incompatible"
+
+
+
+@dataclass 
+class Metadata:
+  """
+  Only model string + support type allowed.
+  All complex logic (harnesses, parts, etc.) goes in brands/ folder structure.
+  
+  Used in PlatformConfig as: models=[Metadata("Honda Accord 2018-22", SupportType.UPSTREAM)]
+  """
+  model: str              # e.g. "Honda Accord 2018-22" - must match CarDocs name exactly  
+  support: SupportType
+
+
+METADATA_REGISTRY: Dict[str, Metadata] = {}
+
+
+def register_models(models: list[Metadata]) -> None:
+  """Register list of model metadata in the global registry"""
+  for model_metadata in models:
+    METADATA_REGISTRY[model_metadata.model] = model_metadata
+
+
+def get_metadata(model_string: str) -> Optional[Metadata]:
+  """Lookup metadata by model string"""
+  return METADATA_REGISTRY.get(model_string)
+
+
+# Note: Complex Honda-specific metadata will be added later in brands/ folder structure
+# For now, keeping it simple with just model string + support type linking
