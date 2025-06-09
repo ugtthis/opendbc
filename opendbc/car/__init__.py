@@ -7,6 +7,7 @@ from dataclasses import replace
 from opendbc.car import structs, uds
 from opendbc.car.can_definitions import CanData
 from opendbc.car.docs_definitions import CarDocs, ExtraCarDocs
+from opendbc.metadata.definitions import Metadata
 
 DT_CTRL = 0.01  # car state and control loop timestep (s)
 
@@ -294,6 +295,8 @@ class PlatformConfigBase(Freezable):
   specs: CarSpecs
 
   dbc_dict: DbcDict
+
+  models: list[Metadata] | None = None
 
   flags: int = 0
 

@@ -4,6 +4,7 @@ from enum import Enum, IntFlag
 from opendbc.car import Bus, CarSpecs, PlatformConfig, Platforms, structs, uds
 from opendbc.car.common.conversions import Conversions as CV
 from opendbc.car.docs_definitions import CarFootnote, CarHarness, CarDocs, CarParts, Column, Device
+from opendbc.metadata.definitions import Metadata, SupportType
 from opendbc.car.fw_query_definitions import FwQueryConfig, Request, StdQueries, p16
 
 Ecu = structs.CarParams.Ecu
@@ -149,6 +150,11 @@ class CAR(Platforms):
     # steerRatio: 11.82 is spec end-to-end
     CarSpecs(mass=3279 * CV.LB_TO_KG, wheelbase=2.83, steerRatio=16.33, centerToFrontRatio=0.39, tireStiffnessFactor=0.8467),
     {Bus.pt: 'honda_accord_2018_can_generated'},
+    [
+      Metadata("Honda Accord 2018-22", SupportType.UPSTREAM),
+      Metadata("Honda Inspire 2018", SupportType.DASHCAM),
+      Metadata("Honda Accord Hybrid 2018-22", SupportType.UPSTREAM),
+    ]
   )
   HONDA_CIVIC_BOSCH = HondaBoschPlatformConfig(
     [

@@ -11,7 +11,7 @@ from natsort import natsorted
 from opendbc.car.common.basedir import BASEDIR
 from opendbc.car import gen_empty_fingerprint
 from opendbc.car.structs import CarParams
-from opendbc.metadata.definitions import BaseCarHarness, CarDocs, Device, ExtraCarDocs, Column, ExtraCarsColumn, CommonFootnote, PartType, SupportType
+from opendbc.metadata.definitions import BaseCarHarness, CarDocs, Device, ExtraCarDocs, Column, ExtraCarsColumn, CommonFootnote, PartType, SupportType, register_models
 from opendbc.car.car_helpers import interfaces
 from opendbc.car.interfaces import get_interface_attr
 from opendbc.car.values import Platform
@@ -43,6 +43,18 @@ def get_all_footnotes() -> dict[Enum, int]:
   return {fn: idx + 1 for idx, fn in enumerate(all_footnotes)}
 
 
+def register_all_metadata(platforms):
+  """Register metadata from all platforms that have models populated"""
+  all_metadata = []
+  for platform in platforms.values():
+    if hasattr(platform.config, 'models') and platform.config.models:
+      all_metadata.extend(platform.config.models)
+  
+  if all_metadata:
+    register_models(all_metadata)
+    print(f"Registered {len(all_metadata)} metadata entries")
+
+
 def build_sorted_car_docs_list(platforms, footnotes=None):
   collected_car_docs: list[CarDocs | ExtraCarDocs] = []
   for platform in platforms.values():
@@ -66,6 +78,9 @@ def build_sorted_car_docs_list(platforms, footnotes=None):
 
 # CAUTION: This function is imported by shop.comma.ai and comma.ai/vehicles, test changes carefully
 def get_all_car_docs() -> list[CarDocs]:
+  # Register metadata from all platforms before building docs
+  register_all_metadata(EXTRA_PLATFORMS)
+  
   collected_footnotes = get_all_footnotes()
   sorted_list: list[CarDocs] = build_sorted_car_docs_list(EXTRA_PLATFORMS, footnotes=collected_footnotes)
   return sorted_list
