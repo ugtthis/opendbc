@@ -17,6 +17,7 @@ from opendbc.car.interfaces import get_interface_attr
 from opendbc.car.values import Platform
 from opendbc.car.mock.values import CAR as MOCK
 from opendbc.car.extra_cars import CAR as EXTRA
+from opendbc.metadata import get_car_docs
 
 
 EXTRA_CARS_MD_OUT = os.path.join(BASEDIR, "../", "../", "docs", "CARS.md")
@@ -46,13 +47,12 @@ def get_all_footnotes() -> dict[Enum, int]:
 def build_sorted_car_docs_list(platforms, footnotes=None):
   collected_car_docs: list[CarDocs | ExtraCarDocs] = []
   for platform in platforms.values():
-    car_docs = platform.config.car_docs
-    CP = get_params_for_docs(platform)
-
-    if not len(car_docs):
+    car_docs = get_car_docs(platform) or platform.config.car_docs
+    if not car_docs:
       continue
 
-    # A platform can include multiple car models
+    CP = get_params_for_docs(platform)
+
     for _car_docs in car_docs:
       if not hasattr(_car_docs, "row"):
         _car_docs.init_make(CP)
