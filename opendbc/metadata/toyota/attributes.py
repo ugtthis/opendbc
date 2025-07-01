@@ -101,7 +101,9 @@ METADATA = {
   ],
   
   "TOYOTA_COROLLA": [
-    ToyotaCarDocs("Toyota Corolla 2017-19"),
+    ToyotaCarDocs(
+      name="Toyota Corolla 2017-19",
+    ),
   ],
   
   "TOYOTA_COROLLA_TSS2": [
