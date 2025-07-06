@@ -4,5 +4,5 @@ METADATA = {
   **TOYOTA_METADATA,
 }
 
-def get_car_docs(platform_name: str):
+def get_brand_metadata(platform_name: str):
   return METADATA.get(platform_name) 
