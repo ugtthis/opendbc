@@ -16,7 +16,7 @@ python3 create_cars_json.py --validate          # Validate output after generati
 import json
 import os
 import sys
-import time
+import logging
 import argparse
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
@@ -49,23 +49,27 @@ class ScriptStats:
 
 class MetadataExtractor:
   def __init__(self, verbose: bool = False, everything: bool = False):
-    self.verbose = verbose
     self.everything = everything
     self.stats = ScriptStats()
-
-  def log(self, message: str, level: str = "INFO") -> None:
-    if self.verbose or level in ["ERROR", "WARNING"]:
-      timestamp = time.strftime("%H:%M:%S")
-      print(f"[{timestamp}] {level}: {message}")
+    
+    # Configure logging
+    self.logger = logging.getLogger("car_metadata")
+    self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+    
+    # Create console handler with formatter
+    console = logging.StreamHandler()
+    formatter = logging.Formatter("[%(asctime)s] %(levelname)s: %(message)s", datefmt="%H:%M:%S")
+    console.setFormatter(formatter)
+    self.logger.addHandler(console)
 
   def _validate_car_doc(self, car_doc: CarDocs) -> bool:
     if not car_doc.name:
-      self.log("Car missing name field", "WARNING")
+      self.logger.warning("Car missing name field")
       self.stats.warnings += 1
       return False
 
     if not hasattr(car_doc, "car_fingerprint") or not car_doc.car_fingerprint:
-      self.log(f"Car {car_doc.name} missing fingerprint", "WARNING")
+      self.logger.warning(f"Car {car_doc.name} missing fingerprint")
       self.stats.warnings += 1
       return False
 
@@ -102,7 +106,7 @@ class MetadataExtractor:
       model = car_doc.car_fingerprint
       platform = PLATFORMS.get(model)
       if not platform:
-        self.log(f"Platform not found for {car_doc.name}", "ERROR")
+        self.logger.error(f"Platform not found for {car_doc.name}")
         self.stats.errors += 1
         return None
         
@@ -119,7 +123,7 @@ class MetadataExtractor:
       return car_data
       
     except Exception as e:
-      self.log(f"Error processing {car_doc.name}: {e}", "ERROR")
+      self.logger.error(f"Error processing {car_doc.name}: {e}")
       self.stats.errors += 1
       return None
 
@@ -273,7 +277,7 @@ class MetadataExtractor:
       try:
         center_to_front_ratio = CP.centerToFront / CP.wheelbase
       except (AttributeError, ZeroDivisionError) as e:
-        self.log(f"Error calculating center_to_front_ratio for {car_doc.name}: {e}", "WARNING")
+        self.logger.warning(f"Error calculating center_to_front_ratio for {car_doc.name}: {e}")
       
     # Handle special case for max lateral accel
     max_lateral_accel = self._get_attr(CP, "maxLateralAccel")
@@ -337,7 +341,7 @@ class MetadataExtractor:
     }
 
   def validate_output(self, cars_data: List[Dict[str, Any]]) -> bool:
-    self.log("Validating generated data...")
+    self.logger.info("Validating generated data...")
     
     validation_errors = 0
     required_fields = ["name", "make", "model", "car_fingerprint"]
@@ -348,7 +352,7 @@ class MetadataExtractor:
       # Check required fields
       for field in required_fields:
         if not car.get(field):
-          self.log(f"Car {i} missing required field: {field}", "ERROR")
+          self.logger.error(f"Car {i} missing required field: {field}")
           validation_errors += 1
       
       # Check for reasonable data ranges
@@ -356,21 +360,21 @@ class MetadataExtractor:
       if mass is not None:
         min_mass, max_mass = valid_mass_range
         if mass < min_mass or mass > max_mass:
-          self.log(f"Car {car.get('name', i)} has suspicious mass: {mass} kg", "WARNING")
+          self.logger.warning(f"Car {car.get('name', i)} has suspicious mass: {mass} kg")
           self.stats.warnings += 1
       
       wheelbase = car.get("wheelbase")
       if wheelbase is not None:
         min_wb, max_wb = valid_wheelbase_range
         if wheelbase < min_wb or wheelbase > max_wb:
-          self.log(f"Car {car.get('name', i)} has suspicious wheelbase: {wheelbase} m", "WARNING")
+          self.logger.warning(f"Car {car.get('name', i)} has suspicious wheelbase: {wheelbase} m")
           self.stats.warnings += 1
     
     if validation_errors > 0:
-      self.log(f"Validation failed with {validation_errors} errors", "ERROR")
+      self.logger.error(f"Validation failed with {validation_errors} errors")
       return False
     
-    self.log("Validation passed!", "INFO")
+    self.logger.info("Validation passed!")
     return True
 
   def get_all_cars(self) -> List[CarDocs]:
@@ -386,23 +390,23 @@ class MetadataExtractor:
       
       return all_cars
     except Exception as e:
-      self.log(f"Error retrieving car docs: {e}", "ERROR")
+      self.logger.error(f"Error retrieving car docs: {e}")
       self.stats.errors += 1
       return []
 
   def generate_json(self, output_filename: str, validate: bool = False) -> bool:
-    self.log("Starting car data extraction...")
+    self.logger.info("Starting car data extraction...")
     
     # Get all cars
     all_cars = self.get_all_cars()
     self.stats.total_cars = len(all_cars)
     
     if self.stats.total_cars == 0:
-      self.log("Error: No cars found. Check your opendbc installation.", "ERROR")
+      self.logger.error("Error: No cars found. Check your opendbc installation.")
       return False
     
     car_type = "all known cars" if self.everything else "supported cars"
-    self.log(f"Processing {self.stats.total_cars} {car_type}...")
+    self.logger.info(f"Processing {self.stats.total_cars} {car_type}...")
     
     # Process all cars
     cars_data = []
@@ -414,20 +418,20 @@ class MetadataExtractor:
     
     # Check if we processed any cars
     if not cars_data:
-      self.log("Error: No car data was processed successfully.", "ERROR")
+      self.logger.error("Error: No car data was processed successfully.")
       return False
     
     # Sort the cars for readable output (by make, then model)
     cars_data = sorted(cars_data, key=lambda c: (c.get('make') or '', c.get('model') or ''))
     
     # Write out to file
-    self.log(f"Writing {len(cars_data)} cars to {output_filename}...")
+    self.logger.info(f"Writing {len(cars_data)} cars to {output_filename}...")
     
     try:
       with open(output_filename, "w") as f:
         json.dump(cars_data, f, indent=2, ensure_ascii=False)
     except (IOError, PermissionError) as e:
-      self.log(f"Error writing to file {output_filename}: {e}", "ERROR")
+      self.logger.error(f"Error writing to file {output_filename}: {e}")
       return False
     
     # Validate output if requested
@@ -435,13 +439,13 @@ class MetadataExtractor:
       return False
     
     # Success summary
-    self.log("=" * 30)
-    self.log("GENERATION COMPLETE", "INFO")
-    self.log("=" * 30)
-    self.log(f"Total cars processed: {self.stats.processed_cars}/{self.stats.total_cars}")
+    self.logger.info("=" * 30)
+    self.logger.info("GENERATION COMPLETE")
+    self.logger.info("=" * 30)
+    self.logger.info(f"Total cars processed: {self.stats.processed_cars}/{self.stats.total_cars}")
     if self.stats.errors > 0 or self.stats.warnings > 0:
-      self.log(f"Errors: {self.stats.errors}, Warnings: {self.stats.warnings}")
-    self.log(f"Output file: {os.path.abspath(output_filename)}")
+      self.logger.info(f"Errors: {self.stats.errors}, Warnings: {self.stats.warnings}")
+    self.logger.info(f"Output file: {os.path.abspath(output_filename)}")
     
     return True
 
