@@ -421,8 +421,10 @@ class MetadataExtractor:
       self.logger.error("Error: No car data was processed successfully.")
       return False
     
-    # Sort the cars for readable output (by make, then model)
-    cars_data = sorted(cars_data, key=lambda c: (c.get('make') or '', c.get('model') or ''))
+    def sort_by_make_then_model(car):
+      return (car.get('make') or '', car.get('model') or '')
+    
+    cars_data = sorted(cars_data, key=sort_by_make_then_model)
     
     # Write out to file
     self.logger.info(f"Writing {len(cars_data)} cars to {output_filename}...")
