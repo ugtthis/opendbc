@@ -81,21 +81,21 @@ class MetadataExtractor:
     return value.value if hasattr(value, "value") else (
            value.name if hasattr(value, "name") else str(value))
 
-  def _get_attr(self, obj: Any, attr_name: str, default: Any = None) -> Any:
-    return getattr(obj, attr_name, default) if obj else default
-
-  def _get_nested_attr(self, obj: Any, path: str, default: Any = None) -> Any:
-    if not obj:
+  def deep_get(self, obj: Any, path: str, default: Any = None) -> Any:
+    if obj is None:
       return default
       
-    try:
-      parts = path.split('.')
-      value = obj
-      for part in parts:
-        value = getattr(value, part)
-      return value
-    except (AttributeError, KeyError):
-      return default
+    # Optimize for the common case
+    if '.' not in path:
+      return getattr(obj, path, default)
+      
+    nested_value = obj
+    for attr in path.split('.'):
+      try:
+        nested_value = getattr(nested_value, attr)
+      except (AttributeError, KeyError):
+        return default
+    return nested_value
 
   def extract_car_data(self, car_doc: CarDocs) -> Optional[Dict[str, Any]]:
     if not self._validate_car_doc(car_doc):
@@ -143,10 +143,10 @@ class MetadataExtractor:
       
     return {
       "name": car_doc.name,
-      "make": self._get_attr(car_doc, "make"),
-      "model": self._get_attr(car_doc, "model"),
-      "years": self._get_attr(car_doc, "years"),
-      "year_list": self._get_attr(car_doc, "year_list", []),
+      "make": self.deep_get(car_doc, "make"),
+      "model": self.deep_get(car_doc, "model"),
+      "years": self.deep_get(car_doc, "years"),
+      "year_list": self.deep_get(car_doc, "year_list", []),
       "package": car_doc.package,
       "requirements": car_doc.requirements,
       "video": car_doc.video,
@@ -158,9 +158,9 @@ class MetadataExtractor:
       "merged": car_doc.merged,
       "support_type": car_doc.support_type.value if car_doc.support_type else None,
       "support_link": car_doc.support_link,
-      "detail_sentence": self._get_attr(car_doc, "detail_sentence"),
-      "car_fingerprint": self._get_attr(car_doc, "car_fingerprint"),
-      "brand": self._get_attr(car_doc, "brand"),
+      "detail_sentence": self.deep_get(car_doc, "detail_sentence"),
+      "car_fingerprint": self.deep_get(car_doc, "car_fingerprint"),
+      "brand": self.deep_get(car_doc, "brand"),
     }
   
   def _extract_parts_info(self, car_doc: CarDocs) -> Dict[str, Any]:
@@ -280,64 +280,64 @@ class MetadataExtractor:
         self.logger.warning(f"Error calculating center_to_front_ratio for {car_doc.name}: {e}")
       
     # Handle special case for max lateral accel
-    max_lateral_accel = self._get_attr(CP, "maxLateralAccel")
+    max_lateral_accel = self.deep_get(CP, "maxLateralAccel")
     if isinstance(max_lateral_accel, float) and (max_lateral_accel in [float("inf"), float("-inf")]):
       max_lateral_accel = None
     
     # Extract configurations
     return {
       # Basic specs
-      "mass": self._get_attr(CP, "mass"),
-      "mass_curb_weight": self._get_nested_attr(platform, "config.specs.mass"),
-      "wheelbase": self._get_attr(CP, "wheelbase"),
-      "steer_ratio": self._get_attr(CP, "steerRatio"),
+      "mass": self.deep_get(CP, "mass"),
+      "mass_curb_weight": self.deep_get(platform, "config.specs.mass"),
+      "wheelbase": self.deep_get(CP, "wheelbase"),
+      "steer_ratio": self.deep_get(CP, "steerRatio"),
       "center_to_front_ratio": center_to_front_ratio,
-      "center_to_front_ratio_base": self._get_nested_attr(platform, "config.specs.centerToFrontRatio"),
+      "center_to_front_ratio_base": self.deep_get(platform, "config.specs.centerToFrontRatio"),
       "max_lateral_accel": max_lateral_accel,
       
       # Network and bus config
-      "network_location": self._convert_enum(self._get_attr(CP, "networkLocation")),
-      "bus_lookup": self._get_nested_attr(platform, "config.dbc_dict"),
-      "radar_delay": self._get_attr(CP, "radarDelay"),
-      "wheel_speed_factor": self._get_attr(CP, "wheelSpeedFactor"),
+      "network_location": self._convert_enum(self.deep_get(CP, "networkLocation")),
+      "bus_lookup": self.deep_get(platform, "config.dbc_dict"),
+      "radar_delay": self.deep_get(CP, "radarDelay"),
+      "wheel_speed_factor": self.deep_get(CP, "wheelSpeedFactor"),
       
       # Speed settings
-      "start_accel": self._get_attr(CP, "startAccel"),
-      "min_steer_speed_base": self._get_nested_attr(platform, "config.specs.minSteerSpeed"),
-      "min_enable_speed": self._get_attr(CP, "minEnableSpeed"),
-      "min_enable_speed_base": self._get_nested_attr(platform, "config.specs.minEnableSpeed"),
+      "start_accel": self.deep_get(CP, "startAccel"),
+      "min_steer_speed_base": self.deep_get(platform, "config.specs.minSteerSpeed"),
+      "min_enable_speed": self.deep_get(CP, "minEnableSpeed"),
+      "min_enable_speed_base": self.deep_get(platform, "config.specs.minEnableSpeed"),
       
       # Steering configuration
-      "steer_control_type": self._convert_enum(self._get_attr(CP, "steerControlType")),
-      "steer_actuator_delay": self._get_attr(CP, "steerActuatorDelay"),
-      "steer_ratio_rear": self._get_attr(CP, "steerRatioRear"),
-      "steer_limit_timer": self._get_attr(CP, "steerLimitTimer"),
+      "steer_control_type": self._convert_enum(self.deep_get(CP, "steerControlType")),
+      "steer_actuator_delay": self.deep_get(CP, "steerActuatorDelay"),
+      "steer_ratio_rear": self.deep_get(CP, "steerRatioRear"),
+      "steer_limit_timer": self.deep_get(CP, "steerLimitTimer"),
       
       # Tire and inertia config
-      "tire_stiffness_factor": self._get_attr(CP, "tireStiffnessFactor"),
-      "tire_stiffness_factor_base": self._get_nested_attr(platform, "config.specs.tireStiffnessFactor"),
-      "tire_stiffness_front": self._get_attr(CP, "tireStiffnessFront"),
-      "tire_stiffness_rear": self._get_attr(CP, "tireStiffnessRear"),
-      "rotational_inertia": self._get_attr(CP, "rotationalInertia"),
+      "tire_stiffness_factor": self.deep_get(CP, "tireStiffnessFactor"),
+      "tire_stiffness_factor_base": self.deep_get(platform, "config.specs.tireStiffnessFactor"),
+      "tire_stiffness_front": self.deep_get(CP, "tireStiffnessFront"),
+      "tire_stiffness_rear": self.deep_get(CP, "tireStiffnessRear"),
+      "rotational_inertia": self.deep_get(CP, "rotationalInertia"),
       
       # Features and capabilities
-      "experimental_longitudinal_available": self._get_attr(CP, "experimentalLongitudinalAvailable"),
-      "openpilot_longitudinal_control": self._get_attr(CP, "openpilotLongitudinalControl"),
-      "dashcam_only": self._get_attr(CP, "dashcamOnly"),
-      "enable_dsu": self._get_attr(CP, "enableDsu"),
-      "enable_bsm": self._get_attr(CP, "enableBsm"),
-      "pcm_cruise": self._get_attr(CP, "pcmCruise"),
-      "flags": self._get_attr(CP, "flags"),
-      "auto_resume_sng": self._get_attr(CP, "autoResumeSng"),
-      "radarUnavailable": self._get_attr(CP, "radarUnavailable"),
-      "passive": self._get_attr(CP, "passive"),
+      "experimental_longitudinal_available": self.deep_get(CP, "experimentalLongitudinalAvailable"),
+      "openpilot_longitudinal_control": self.deep_get(CP, "openpilotLongitudinalControl"),
+      "dashcam_only": self.deep_get(CP, "dashcamOnly"),
+      "enable_dsu": self.deep_get(CP, "enableDsu"),
+      "enable_bsm": self.deep_get(CP, "enableBsm"),
+      "pcm_cruise": self.deep_get(CP, "pcmCruise"),
+      "flags": self.deep_get(CP, "flags"),
+      "auto_resume_sng": self.deep_get(CP, "autoResumeSng"),
+      "radarUnavailable": self.deep_get(CP, "radarUnavailable"),
+      "passive": self.deep_get(CP, "passive"),
       
       # Longitudinal config
-      "stopping_decel_rate": self._get_attr(CP, "stoppingDecelRate"),
-      "vEgo_stopping": self._get_attr(CP, "vEgoStopping"),
-      "vEgo_starting": self._get_attr(CP, "vEgoStarting"),
-      "stop_accel": self._get_attr(CP, "stopAccel"),
-      "longitudinal_actuator_delay": self._get_attr(CP, "longitudinalActuatorDelay"),
+      "stopping_decel_rate": self.deep_get(CP, "stoppingDecelRate"),
+      "vEgo_stopping": self.deep_get(CP, "vEgoStopping"),
+      "vEgo_starting": self.deep_get(CP, "vEgoStarting"),
+      "stop_accel": self.deep_get(CP, "stopAccel"),
+      "longitudinal_actuator_delay": self.deep_get(CP, "longitudinalActuatorDelay"),
     }
 
   def validate_output(self, cars_data: List[Dict[str, Any]]) -> bool:
