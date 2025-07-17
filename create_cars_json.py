@@ -27,8 +27,8 @@ EXCLUDED_SUPPORT_TYPES = ["Not compatible", "Community"]
 
 try:
   from opendbc.car.docs import get_all_car_docs, get_params_for_docs
-  from opendbc.car.docs_definitions import CarDocs, Star, BaseCarHarness, Tool
-  from opendbc.car.values import PLATFORMS
+  from opendbc.car.docs_definitions import CarDocs, Star, BaseCarHarness, Tool, EnumBase
+  from opendbc.car.values import PLATFORMS, Platform
   from opendbc.car.structs import CarParams
 except ImportError as e:
   print("Error: Unable to import opendbc modules.")
@@ -129,7 +129,7 @@ class MetadataExtractor:
 
   def _extract_basic_info(self, car_doc: CarDocs) -> dict[str, Any]:
     # Extract footnotes safely
-    footnotes = []
+    footnotes: list[str] = []
     try:
       if car_doc.footnotes:
         footnotes = [fn.value.text for fn in car_doc.footnotes]
@@ -176,14 +176,14 @@ class MetadataExtractor:
       }
 
     # Get all parts including sub-parts
-    all_parts = car_doc.car_parts.all_parts()
-    parts_list = [part for part in all_parts if not isinstance(part, Tool)]
-    tools_list = [part for part in all_parts if isinstance(part, Tool)]
+    all_parts: list[EnumBase] = car_doc.car_parts.all_parts()
+    parts_list: list[EnumBase] = [part for part in all_parts if not isinstance(part, Tool)]
+    tools_list: list[Tool] = [part for part in all_parts if isinstance(part, Tool)]
 
     # Extract basic info
     angled_mount_parts = ["angled_mount_8_degrees", "threex_angled_mount"]
-    car_parts = []
-    harness_name = None
+    car_parts: list[str] = []
+    harness_name: str | None = None
     has_angled_mount = any(part.name in angled_mount_parts for part in all_parts)
 
     # Get basic parts and harness
@@ -205,7 +205,7 @@ class MetadataExtractor:
       "hardware": hardware_details,
     }
 
-  def _format_detailed_parts(self, parts_list: list[Any]) -> list[dict[str, Any]]:
+  def _format_detailed_parts(self, parts_list: list[EnumBase]) -> list[dict[str, Any]]:
     detailed_parts = []
     for part in sorted(set(parts_list), key=lambda p: str(p.value.name)):
       count = parts_list.count(part)
@@ -218,7 +218,7 @@ class MetadataExtractor:
       })
     return detailed_parts
 
-  def _format_tools_required(self, tools_list: list[Any]) -> list[dict[str, Any]]:
+  def _format_tools_required(self, tools_list: list[Tool]) -> list[dict[str, Any]]:
     tools_required = []
     for tool in sorted(set(tools_list), key=lambda t: str(t.value.name)):
       count = tools_list.count(tool)
@@ -229,7 +229,7 @@ class MetadataExtractor:
       })
     return tools_required
 
-  def _format_hardware_html(self, car_doc: CarDocs, parts_list: list[Any], tools_list: list[Any]) -> str:
+  def _format_hardware_html(self, car_doc: CarDocs, parts_list: list[EnumBase], tools_list: list[Tool]) -> str:
     model_years = car_doc.model + (" " + car_doc.years if car_doc.years else "")
     buy_link = f'<a href="https://comma.ai/shop/comma-3x.html?make={car_doc.make}&model={model_years}">Buy Here</a>'
 
@@ -252,7 +252,7 @@ class MetadataExtractor:
     return hardware_details
 
   def _extract_row_data(self, car_doc: CarDocs) -> dict[str, Any]:
-    row_data = {}
+    row_data: dict[str, Any] = {}
     default_fsr_speed = "0 mph"
 
     if hasattr(car_doc, "row"):
@@ -271,7 +271,7 @@ class MetadataExtractor:
     }
 
   # Not using pipe syntax (CarParams | None) because capnp types don't support it at runtime
-  def _extract_vehicle_configs(self, car_doc: CarDocs, CP: Optional[CarParams], platform: Any) -> dict[str, Any]:  # noqa: UP007
+  def _extract_vehicle_configs(self, car_doc: CarDocs, CP: Optional[CarParams], platform: Platform) -> dict[str, Any]:  # noqa: UP007
     # Calculate center to front ratio
     center_to_front_ratio = 0.5  # Default value
     if CP and hasattr(CP, "centerToFront") and hasattr(CP, "wheelbase") and CP.wheelbase > 0:
