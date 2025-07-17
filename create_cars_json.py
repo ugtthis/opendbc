@@ -18,7 +18,7 @@ import os
 import sys
 import logging
 import argparse
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from dataclasses import dataclass
 
 
@@ -75,7 +75,7 @@ class MetadataExtractor:
 
     return True
 
-  def _convert_enum(self, value: Any) -> Optional[str]:
+  def _convert_enum(self, value: Any) -> str | None:
     if value is None:
       return None
     return value.value if hasattr(value, "value") else (
@@ -97,7 +97,7 @@ class MetadataExtractor:
         return default
     return nested_value
 
-  def extract_car_data(self, car_doc: CarDocs) -> Optional[dict[str, Any]]:
+  def extract_car_data(self, car_doc: CarDocs) -> dict[str, Any] | None:
     if not self._validate_car_doc(car_doc):
       return None
 
@@ -270,7 +270,8 @@ class MetadataExtractor:
       "video_row": row_data.get("video", ""),
     }
 
-  def _extract_vehicle_configs(self, car_doc: CarDocs, CP: Optional[CarParams], platform: Any) -> dict[str, Any]:
+  # Not using pipe syntax (CarParams | None) because capnp types don't support it at runtime
+  def _extract_vehicle_configs(self, car_doc: CarDocs, CP: Optional[CarParams], platform: Any) -> dict[str, Any]:  # noqa: UP007
     # Calculate center to front ratio
     center_to_front_ratio = 0.5  # Default value
     if CP and hasattr(CP, "centerToFront") and hasattr(CP, "wheelbase") and CP.wheelbase > 0:
