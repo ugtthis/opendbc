@@ -346,13 +346,11 @@ class MetadataExtractor:
     valid_wheelbase_range = (1.0, 5.0)  # meters
 
     for i, car in enumerate(cars_data):
-      # Check required fields
       for field in required_fields:
         if not car.get(field):
           self.logger.error(f"Car {i} missing required field: {field}")
           validation_errors += 1
 
-      # Check for reasonable data ranges
       mass = car.get("mass")
       if mass is not None:
         min_mass, max_mass = valid_mass_range
@@ -470,7 +468,6 @@ Examples:
 
   args = parser.parse_args()
 
-  # Determine output filename
   output_filename = args.output or ("all_cars.json" if args.everything else "supported_cars.json")
 
   # Create extractor and generate JSON
