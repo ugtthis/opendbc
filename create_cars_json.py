@@ -200,34 +200,30 @@ class MetadataExtractor:
       "car_parts": car_parts,
       "harness": harness_name,
       "has_angled_mount": has_angled_mount,
-      "detailed_parts": self._format_detailed_parts(parts_list),
-      "tools_required": self._format_tools_required(tools_list),
+      "detailed_parts": self._format_items_to_dicts(parts_list, True),
+      "tools_required": self._format_items_to_dicts(tools_list),
       "hardware": hardware_details,
     }
 
-  def _format_detailed_parts(self, parts_list: list[EnumBase]) -> list[dict[str, Any]]:
-    detailed_parts = []
-    for part in sorted(set(parts_list), key=lambda p: str(p.value.name)):
-      count = parts_list.count(part)
-      part_type = part.part_type.name if hasattr(part, "part_type") else None
-      detailed_parts.append({
-        "count": count,
-        "name": part.value.name,
-        "type": part_type,
-        "enum_name": part.name
-      })
-    return detailed_parts
+  def _format_items_to_dicts(self, items: list[EnumBase], include_part_type: bool = False) -> list[dict[str, Any]]:
+    item_counts = {}
+    for item in items:
+      item_counts[item] = item_counts.get(item, 0) + 1
 
-  def _format_tools_required(self, tools_list: list[Tool]) -> list[dict[str, Any]]:
-    tools_required = []
-    for tool in sorted(set(tools_list), key=lambda t: str(t.value.name)):
-      count = tools_list.count(tool)
-      tools_required.append({
-        "count": count,
-        "name": tool.value.name,
-        "enum_name": tool.name
-      })
-    return tools_required
+    formatted_items = []
+    for item in sorted(item_counts, key=lambda x: str(x.value.name)):
+      item_dict = {
+        "count": item_counts[item],
+        "name": item.value.name,
+        "enum_name": item.name
+      }
+
+      if include_part_type and hasattr(item, "part_type"):
+        item_dict["type"] = item.part_type.name
+
+      formatted_items.append(item_dict)
+
+    return formatted_items
 
   def _format_hardware_html(self, car_doc: CarDocs, parts_list: list[EnumBase], tools_list: list[Tool]) -> str:
     model_years = car_doc.model + (" " + car_doc.years if car_doc.years else "")
