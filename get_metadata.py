@@ -167,8 +167,8 @@ def extract_vehicle_configs(CP: Any, platform: Any) -> dict[str, Any]:
     "tire_stiffness_front": get_attr(CP, "tireStiffnessFront"),
     "tire_stiffness_rear": get_attr(CP, "tireStiffnessRear"),
     "rotational_inertia": get_attr(CP, "rotationalInertia"),
-    # Features and capabilities
-    "experimental_longitudinal_available": get_attr(CP, "experimentalLongitudinalAvailable"),
+    # Features and capabilities  
+    "experimental_longitudinal_available": get_attr(CP, "alphaLongitudinalAvailable"),
     "openpilot_longitudinal_control": get_attr(CP, "openpilotLongitudinalControl"),
     "dashcam_only": get_attr(CP, "dashcamOnly"),
     "enable_dsu": get_attr(CP, "enableDsu"),
