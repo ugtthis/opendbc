@@ -85,15 +85,15 @@ def extract_parts_info(car_doc: CarDocs) -> dict[str, Any]:
     return formatted
 
   model_years = car_doc.model + (" " + car_doc.years if car_doc.years else "")
-  buy_link = f'<a href="https://comma.ai/shop/comma-3x.html?make={car_doc.make}&model={model_years}">Buy Here</a>'
+  buy_link = f"https://comma.ai/shop/comma-3x.html?make={car_doc.make}&model={model_years}"
 
-  parts_display = "<br>".join([f"- {parts_list.count(part)} {part.value.name}" for part in sorted(set(parts_list), key=lambda p: str(p.value.name))])
+  parts_display = "\n".join([f"- {parts_list.count(part)} {part.value.name}" for part in sorted(set(parts_list), key=lambda p: str(p.value.name))])
 
-  hardware = f"<details><summary>Parts</summary><sub>{parts_display}<br>{buy_link}</sub></details>"
+  hardware = f"Parts:\n{parts_display}\nBuy: {buy_link}"
 
   if tools_list:
-    tools_display = "<br>".join([f"- {tools_list.count(tool)} {tool.value.name}" for tool in sorted(set(tools_list), key=lambda t: str(t.value.name))])
-    hardware += f"<details><summary>Tools</summary><sub>{tools_display}</sub></details>"
+    tools_display = "\n".join([f"- {tools_list.count(tool)} {tool.value.name}" for tool in sorted(set(tools_list), key=lambda t: str(t.value.name))])
+    hardware += f"\n\nTools:\n{tools_display}"
 
   return {
     "car_parts": car_parts,
