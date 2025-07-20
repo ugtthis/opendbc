@@ -131,7 +131,6 @@ def extract_metadata(car_doc):
     "support_type": to_json_type(getattr(car_doc, "support_type", None)),
     "video": getattr(car_doc, "video", None),
     "setup_video": getattr(car_doc, "setup_video", None),
-    "video_row": "",
     "footnotes": footnotes,
     "shop_link": shop_link,
     
@@ -208,9 +207,6 @@ def extract_metadata(car_doc):
       if key not in (Column.AUTO_RESUME, Column.SETUP_VIDEO):
         field_name = key.name.lower()
         metadata[field_name] = to_json_type(value)
-        # Set video_row if this is a video field with value
-        if field_name == "video" and value:
-          metadata["video_row"] = str(value)
 
   return metadata
 
