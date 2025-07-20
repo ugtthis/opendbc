@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-import json
-import sys
-import logging
 import argparse
+import contextlib
+import json
+import logging
+import sys
 from pathlib import Path
 
 try:
@@ -19,8 +20,8 @@ logger = logging.getLogger("car_metadata")
 EXCLUDED_SUPPORT_TYPES = ["Not compatible", "Community"]
 
 def serialize_value(value):
-  """Convert enum types and other special values to JSON-serializable formats"""
-  if value is None or isinstance(value, (str, int, float, bool)):
+  """Convert enum types and other special values to JSON-serializable formats."""
+  if value is None or isinstance(value, str | int | float | bool):
     return value
   # Handle enum types with .value attribute (most common case)
   if hasattr(value, "value"):
@@ -32,7 +33,7 @@ def serialize_value(value):
   return str(value)
 
 def extract_metadata(car_doc):
-  """Extract comprehensive metadata from a car document"""
+  """Extract comprehensive metadata from a car document."""
   model = getattr(car_doc, "car_fingerprint", None)
   if not model or model not in PLATFORMS:
     return None
@@ -62,12 +63,15 @@ def extract_metadata(car_doc):
     "steering_torque": None, "auto_resume_star": "empty", "video_row": "",
     "car_parts": [], "harness": None, "has_angled_mount": False,
     "detailed_parts": [], "tools_required": [], "hardware": "",
-    "footnotes": [fn.value.text for fn in car_doc.footnotes] if hasattr(car_doc, "footnotes") and car_doc.footnotes else []
+    "footnotes": [fn.value.text for fn in car_doc.footnotes] if hasattr(car_doc, "footnotes") and car_doc.footnotes else [],
   }
 
   # Handle special case for min_steer_speed
   min_steer_speed = getattr(car_doc, "min_steer_speed", None)
-  metadata["min_steer_speed"] = None if car_doc.name.lower() == "comma body" and isinstance(min_steer_speed, float) and min_steer_speed == float("-inf") else min_steer_speed
+  is_comma_body_inf = (car_doc.name.lower() == "comma body" and
+                      isinstance(min_steer_speed, float) and
+                      min_steer_speed == float("-inf"))
+  metadata["min_steer_speed"] = None if is_comma_body_inf else min_steer_speed
   metadata["min_enable_speed"] = getattr(car_doc, "min_enable_speed", None)
   metadata["auto_resume"] = getattr(car_doc, "auto_resume", None)
 
@@ -80,29 +84,26 @@ def extract_metadata(car_doc):
         metadata["video_row"] = str(value)
 
   # Extract parts information
-  if hasattr(car_doc, "car_parts") and car_doc.car_parts:
-    if hasattr(car_doc.car_parts, "all_parts"):
-      try:
-        all_parts = car_doc.car_parts.all_parts()
-        # Check for angled mount
-        angled_mount_parts = ["angled_mount_8_degrees", "threex_angled_mount"]
-        metadata["has_angled_mount"] = any(part.name in angled_mount_parts for part in all_parts)
-        # Extract harness info
-        for part_enum in car_doc.car_parts.parts:
-          base_part = part_enum.value
-          metadata["car_parts"].append(base_part.name)
-          if isinstance(base_part, BaseCarHarness):
-            metadata["harness"] = part_enum.name.lower()
-      except Exception:
-        pass
+  if hasattr(car_doc, "car_parts") and car_doc.car_parts and hasattr(car_doc.car_parts, "all_parts"):
+    try:
+      all_parts = car_doc.car_parts.all_parts()
+      # Check for angled mount
+      angled_mount_parts = ["angled_mount_8_degrees", "threex_angled_mount"]
+      metadata["has_angled_mount"] = any(part.name in angled_mount_parts for part in all_parts)
+      # Extract harness info
+      for part_enum in car_doc.car_parts.parts:
+        base_part = part_enum.value
+        metadata["car_parts"].append(base_part.name)
+        if isinstance(base_part, BaseCarHarness):
+          metadata["harness"] = part_enum.name.lower()
+    except Exception:
+      logger.debug(f"Error processing car parts for {car_doc.name}")
 
   # Calculate center to front ratio
   center_to_front_ratio = 0.5  # Default value
   if CP and hasattr(CP, "centerToFront") and hasattr(CP, "wheelbase") and CP.wheelbase > 0:
-    try:
+    with contextlib.suppress(AttributeError, ZeroDivisionError):
       center_to_front_ratio = CP.centerToFront / CP.wheelbase
-    except (AttributeError, ZeroDivisionError):
-      pass
 
   # Handle special case for max lateral accel
   max_lateral_accel = getattr(CP, "maxLateralAccel", None)
@@ -170,6 +171,7 @@ def extract_metadata(car_doc):
   return metadata
 
 def main():
+  """Generate car metadata files from car documentation."""
   parser = argparse.ArgumentParser(description="Generate car metadata files")
   parser.add_argument("--output", "-o", type=str, default="./output", help="Output directory")
   parser.add_argument("--everything", action="store_true", help="Include all cars")
@@ -186,7 +188,7 @@ def main():
   all_cars = get_all_car_docs()
   if not args.everything:
     all_cars = [car for car in all_cars if hasattr(car, "support_type") and car.support_type is not None
-               and car.support_type.value not in EXCLUDED_SUPPORT_TYPES]
+                and car.support_type.value not in EXCLUDED_SUPPORT_TYPES]
 
   logger.info(f"Processing {len(all_cars)} cars...")
 
@@ -207,7 +209,7 @@ def main():
   # Sort and save
   cars_data.sort(key=lambda car: (car.get("make", ""), car.get("model", "")))
   json_file = output_dir / "cars.json"
-  with open(json_file, "w") as f:
+  with json_file.open("w") as f:
     json.dump(cars_data, f, indent=2)
 
   logger.info(f"Generated {len(cars_data)} car entries in {json_file}")
