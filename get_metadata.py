@@ -4,11 +4,10 @@ import sys
 import logging
 import argparse
 from pathlib import Path
-from typing import Any, List, Dict
 
 try:
   from opendbc.car.docs import get_all_car_docs, get_params_for_docs
-  from opendbc.car.docs_definitions import BaseCarHarness, Tool, EnumBase
+  from opendbc.car.docs_definitions import BaseCarHarness, Tool, EnumBase, Column, Star
   from opendbc.car.values import PLATFORMS
 except ImportError:
   print("Error: Unable to import opendbc modules. Run 'source ./setup.sh' first.")
@@ -31,7 +30,7 @@ def to_json_type(value):
     return value.name
   return str(value)
 
-def format_items_to_dicts(items: List[EnumBase], include_part_type: bool = False) -> List[Dict[str, Any]]:
+def format_items_to_dicts(items):
   """Format a list of enum items into structured dictionaries with counts."""
   if not items:
     return []
@@ -42,20 +41,12 @@ def format_items_to_dicts(items: List[EnumBase], include_part_type: bool = False
     item_counts[item] = item_counts.get(item, 0) + 1
 
   # Format items into dictionaries
-  formatted_items = []
-  for item in sorted(item_counts, key=lambda x: str(x.value.name) if hasattr(x, "value") else str(x)):
-    item_dict = {
-      "count": item_counts[item],
-      "name": item.value.name if hasattr(item, "value") and hasattr(item.value, "name") else str(item),
-      "enum_name": item.name if hasattr(item, "name") else ""
-    }
-
-    if include_part_type and hasattr(item, "part_type"):
-      item_dict["type"] = item.part_type.name
-
-    formatted_items.append(item_dict)
-
-  return formatted_items
+  return [{
+    "count": item_counts[item],
+    "name": item.value.name if hasattr(item, "value") and hasattr(item.value, "name") else str(item),
+    "enum_name": item.name if hasattr(item, "name") else "",
+    "type": item.part_type.name if hasattr(item, "part_type") else None
+  } for item in sorted(item_counts, key=lambda x: str(x.value.name) if hasattr(x, "value") else str(x))]
 
 def extract_metadata(car_doc):
   """Extract metadata from a car document."""
@@ -68,8 +59,61 @@ def extract_metadata(car_doc):
   if not cp:
     return None
 
+  # Calculate special values
+  min_steer_speed = getattr(car_doc, "min_steer_speed", None)
+  min_steer_speed = None if (car_doc.name.lower() == "comma body" and 
+                             isinstance(min_steer_speed, float) and 
+                             min_steer_speed == float("-inf")) else min_steer_speed
+  
+  auto_resume = getattr(car_doc, "auto_resume", None)
+  if auto_resume is None and cp:
+    min_enable_speed = getattr(car_doc, "min_enable_speed", 0) or 0
+    auto_resume = getattr(cp, "autoResumeSng", False) and min_enable_speed <= 0
+  
+  max_lateral_accel = getattr(cp, "maxLateralAccel", None)
+  if isinstance(max_lateral_accel, float) and max_lateral_accel in [float("inf"), float("-inf")]:
+    max_lateral_accel = None
+    
+  center_to_front_ratio = 0.5  # Default value
+  if cp and hasattr(cp, "centerToFront") and hasattr(cp, "wheelbase") and cp.wheelbase > 0:
+    try:
+      center_to_front_ratio = cp.centerToFront / cp.wheelbase
+    except (AttributeError, ZeroDivisionError):
+      pass
+  
+  # Process car parts
+  parts_list, tools_list = [], []
+  car_parts, harness, has_angled_mount = [], None, False
+  
+  if hasattr(car_doc, "car_parts") and car_doc.car_parts and hasattr(car_doc.car_parts, "all_parts"):
+    try:
+      all_parts = car_doc.car_parts.all_parts()
+      parts_list = [p for p in all_parts if not isinstance(p, Tool)]
+      tools_list = [p for p in all_parts if isinstance(p, Tool)]
+      
+      # Check for angled mount
+      angled_mount_parts = ["angled_mount_8_degrees", "threex_angled_mount"]
+      has_angled_mount = any(part.name in angled_mount_parts for part in all_parts)
+      
+      # Extract basic part info
+      for part_enum in car_doc.car_parts.parts:
+        base_part = part_enum.value
+        car_parts.append(base_part.name if hasattr(base_part, "name") else str(base_part))
+        if isinstance(base_part, BaseCarHarness):
+          harness = part_enum.name.lower()
+    except Exception as e:
+      logger.debug(f"Error processing car parts for {car_doc.name}: {e}")
+
+  # Generate shop link
+  model_years = getattr(car_doc, "model", "") + (" " + getattr(car_doc, "years", "") if hasattr(car_doc, "years") else "")
+  shop_link = f"https://comma.ai/shop/comma-3x.html?make={getattr(car_doc, 'make', '')}&model={model_years}"
+  
+  # Extract footnotes
+  footnotes = [fn.value.text for fn in getattr(car_doc, "footnotes", [])] if hasattr(car_doc, "footnotes") else []
+
   # Basic metadata
   metadata = {
+    # Car info
     "name": car_doc.name,
     "make": getattr(car_doc, "make", None),
     "model": getattr(car_doc, "model", None),
@@ -77,118 +121,55 @@ def extract_metadata(car_doc):
     "year_list": getattr(car_doc, "year_list", []),
     "package": getattr(car_doc, "package", None),
     "requirements": getattr(car_doc, "requirements", None),
-    "video": getattr(car_doc, "video", None),
-    "setup_video": getattr(car_doc, "setup_video", None),
-    "merged": getattr(car_doc, "merged", None),
     "car_fingerprint": model,
     "brand": getattr(car_doc, "brand", None),
+    "merged": getattr(car_doc, "merged", None),
+    
+    # Support and documentation
     "support_link": getattr(car_doc, "support_link", None),
     "detail_sentence": getattr(car_doc, "detail_sentence", None),
     "support_type": to_json_type(getattr(car_doc, "support_type", None)),
+    "video": getattr(car_doc, "video", None),
+    "setup_video": getattr(car_doc, "setup_video", None),
+    "video_row": "",
+    "footnotes": footnotes,
+    "shop_link": shop_link,
+    
+    # Speed and control
     "longitudinal": getattr(car_doc, "longitudinal", None),
+    "min_steer_speed": min_steer_speed,
+    "min_enable_speed": getattr(car_doc, "min_enable_speed", None),
     "fsr_longitudinal": "0 mph",
     "fsr_steering": "0 mph",
     "steering_torque": getattr(car_doc, "steering_torque", None),
-    "auto_resume_star": "empty",
-    "video_row": "",
-    "car_parts": [],
-    "harness": None,
-    "has_angled_mount": False,
-    "detailed_parts": [],
-    "tools_required": [],
-  }
-
-  # Generate shop link
-  model_years = getattr(car_doc, "model", "") + (" " + getattr(car_doc, "years", "") if hasattr(car_doc, "years") else "")
-  metadata["shop_link"] = f"https://comma.ai/shop/comma-3x.html?make={getattr(car_doc, 'make', '')}&model={model_years}"
-
-  # Special case for min_steer_speed
-  min_steer_speed = getattr(car_doc, "min_steer_speed", None)
-  metadata["min_steer_speed"] = None if (car_doc.name.lower() == "comma body" and
-                                        isinstance(min_steer_speed, float) and
-                                        min_steer_speed == float("-inf")) else min_steer_speed
-  metadata["min_enable_speed"] = getattr(car_doc, "min_enable_speed", None)
-  metadata["auto_resume"] = getattr(car_doc, "auto_resume", None)
-
-  # Extract footnotes
-  metadata["footnotes"] = [fn.value.text for fn in getattr(car_doc, "footnotes", [])] if hasattr(car_doc, "footnotes") else []
-
-  # Handle row data
-  if hasattr(car_doc, "row"):
-    for key, value in car_doc.row.items():
-      field_name = key.name.lower()
-      metadata[field_name] = to_json_type(value)
-      if field_name == "video" and value:
-        metadata["video_row"] = str(value)
-
-  # Extract car parts info
-  parts_list = []
-  tools_list = []
-  
-  if hasattr(car_doc, "car_parts") and car_doc.car_parts:
-    if hasattr(car_doc.car_parts, "all_parts"):
-      try:
-        all_parts = car_doc.car_parts.all_parts()
-        
-        # Separate parts and tools
-        parts_list = [part for part in all_parts if not isinstance(part, Tool)]
-        tools_list = [part for part in all_parts if isinstance(part, Tool)]
-        
-        # Check for angled mount
-        angled_mount_parts = ["angled_mount_8_degrees", "threex_angled_mount"]
-        metadata["has_angled_mount"] = any(part.name in angled_mount_parts for part in all_parts)
-        
-        # Extract basic part info
-        for part_enum in car_doc.car_parts.parts:
-          base_part = part_enum.value
-          metadata["car_parts"].append(base_part.name if hasattr(base_part, "name") else str(base_part))
-          if isinstance(base_part, BaseCarHarness):
-            metadata["harness"] = part_enum.name.lower()
-            
-        # Format detailed parts and tools
-        metadata["detailed_parts"] = format_items_to_dicts(parts_list, True)
-        metadata["tools_required"] = format_items_to_dicts(tools_list)
-      except Exception as e:
-        logger.debug(f"Error processing car parts for {car_doc.name}: {e}")
-
-  # Calculate center to front ratio
-  center_to_front_ratio = 0.5  # Default value
-  if cp and hasattr(cp, "centerToFront") and hasattr(cp, "wheelbase") and cp.wheelbase > 0:
-    try:
-      center_to_front_ratio = cp.centerToFront / cp.wheelbase
-    except (AttributeError, ZeroDivisionError):
-      pass
-
-  # Handle special case for max lateral accel
-  max_lateral_accel = getattr(cp, "maxLateralAccel", None)
-  if isinstance(max_lateral_accel, float) and max_lateral_accel in [float("inf"), float("-inf")]:
-    max_lateral_accel = None
-
-  # Add CarParams attributes
-  cp_attrs = {
-    # Basic specs
+    "auto_resume": bool(auto_resume),
+    "auto_resume_star": "full" if auto_resume else "empty",
+    
+    # Parts info
+    "car_parts": car_parts,
+    "harness": harness,
+    "has_angled_mount": has_angled_mount,
+    "detailed_parts": format_items_to_dicts(parts_list),
+    "tools_required": format_items_to_dicts(tools_list),
+    
+    # CarParams attributes
     "mass": getattr(cp, "mass", None),
     "wheelbase": getattr(cp, "wheelbase", None),
     "steer_ratio": getattr(cp, "steerRatio", None),
     "center_to_front_ratio": center_to_front_ratio,
     "max_lateral_accel": max_lateral_accel,
-    # Network and bus config
     "network_location": to_json_type(getattr(cp, "networkLocation", None)),
     "radar_delay": getattr(cp, "radarDelay", None),
     "wheel_speed_factor": getattr(cp, "wheelSpeedFactor", None),
-    # Speed settings
     "start_accel": getattr(cp, "startAccel", None),
-    # Steering configuration
     "steer_control_type": to_json_type(getattr(cp, "steerControlType", None)),
     "steer_actuator_delay": getattr(cp, "steerActuatorDelay", None),
     "steer_ratio_rear": getattr(cp, "steerRatioRear", None),
     "steer_limit_timer": getattr(cp, "steerLimitTimer", None),
-    # Tire and inertia config
     "tire_stiffness_factor": getattr(cp, "tireStiffnessFactor", None),
     "tire_stiffness_front": getattr(cp, "tireStiffnessFront", None),
     "tire_stiffness_rear": getattr(cp, "tireStiffnessRear", None),
     "rotational_inertia": getattr(cp, "rotationalInertia", None),
-    # Features and capabilities
     "experimental_longitudinal_available": getattr(cp, "alphaLongitudinalAvailable", None),
     "openpilot_longitudinal_control": getattr(cp, "openpilotLongitudinalControl", None),
     "dashcam_only": getattr(cp, "dashcamOnly", None),
@@ -199,15 +180,12 @@ def extract_metadata(car_doc):
     "auto_resume_sng": getattr(cp, "autoResumeSng", None),
     "radarUnavailable": getattr(cp, "radarUnavailable", None),
     "passive": getattr(cp, "passive", None),
-    # Longitudinal config
     "stopping_decel_rate": getattr(cp, "stoppingDecelRate", None),
     "vEgo_stopping": getattr(cp, "vEgoStopping", None),
     "vEgo_starting": getattr(cp, "vEgoStarting", None),
     "stop_accel": getattr(cp, "stopAccel", None),
     "longitudinal_actuator_delay": getattr(cp, "longitudinalActuatorDelay", None),
-  }
-  metadata.update(cp_attrs)
-
+  }    
   # Add platform config attributes
   if hasattr(platform, "config") and hasattr(platform.config, "specs"):
     specs = platform.config.specs
@@ -219,8 +197,20 @@ def extract_metadata(car_doc):
       "tire_stiffness_factor_base": getattr(specs, "tireStiffnessFactor", None),
     })
 
+  # Add bus lookup if available
   if hasattr(platform, "config") and hasattr(platform.config, "dbc_dict"):
     metadata["bus_lookup"] = platform.config.dbc_dict
+    
+  # Handle row data (after setting defaults)
+  if hasattr(car_doc, "row"):
+    for key, value in car_doc.row.items():
+      # Only process fields we want to include (skip auto_resume and setup_video)
+      if key not in (Column.AUTO_RESUME, Column.SETUP_VIDEO):
+        field_name = key.name.lower()
+        metadata[field_name] = to_json_type(value)
+        # Set video_row if this is a video field with value
+        if field_name == "video" and value:
+          metadata["video_row"] = str(value)
 
   return metadata
 
@@ -245,7 +235,7 @@ def main():
 
   logger.info(f"Processing {len(all_cars)} cars...")
 
-  # Extract metadata
+  # Extract and sort metadata
   cars_data = []
   processed, errors = 0, 0
   for car_doc in all_cars:
@@ -260,8 +250,10 @@ def main():
       logger.exception(f"Error processing {car_doc.name}: {e}")
       errors += 1
 
-  # Sort and save
+  # Sort by make and model
   cars_data.sort(key=lambda car: (car.get("make", ""), car.get("model", "")))
+  
+  # Save to file
   json_file = output_dir / "cars.json"
   with json_file.open("w") as f:
     json.dump(cars_data, f, indent=2)
