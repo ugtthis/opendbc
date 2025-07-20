@@ -46,9 +46,7 @@ def extract_metadata(car_doc):
     if not CP:
         return None
 
-    # Initialize metadata with basic car attributes and defaults
     metadata = {
-        # Basic car info
         "name": car_doc.name,
         "make": getattr(car_doc, "make", None),
         "model": getattr(car_doc, "model", None),
@@ -64,13 +62,10 @@ def extract_metadata(car_doc):
         "support_link": getattr(car_doc, "support_link", None),
         "detail_sentence": getattr(car_doc, "detail_sentence", None),
         "support_type": serialize_value(getattr(car_doc, "support_type", None)),
-        # Row data defaults
         "longitudinal": None, "fsr_longitudinal": "0 mph", "fsr_steering": "0 mph",
         "steering_torque": None, "auto_resume_star": "empty", "video_row": "",
-        # Parts information
         "car_parts": [], "harness": None, "has_angled_mount": False,
         "detailed_parts": [], "tools_required": [], "hardware": "",
-        # Footnotes
         "footnotes": [fn.value.text for fn in car_doc.footnotes] if hasattr(car_doc, "footnotes") and car_doc.footnotes else []
     }
 
@@ -188,7 +183,6 @@ def main():
     if args.verbose:
         logger.setLevel(logging.DEBUG)
 
-    # Create output directory
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
 
