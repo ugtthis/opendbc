@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-Car Metadata Generator - A minimal tool to extract car metadata from opendbc
-"""
-
 import json
 import sys
 import logging
