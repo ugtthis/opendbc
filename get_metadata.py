@@ -7,7 +7,7 @@ from pathlib import Path
 
 try:
   from opendbc.car.docs import get_all_car_docs, get_params_for_docs
-  from opendbc.car.docs_definitions import BaseCarHarness, Tool, EnumBase, Column, Star
+  from opendbc.car.docs_definitions import BaseCarHarness, Column
   from opendbc.car.values import PLATFORMS
 except ImportError:
   print("Error: Unable to import opendbc modules. Run 'source ./setup.sh' first.")
