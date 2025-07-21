@@ -84,8 +84,7 @@ def extract_parts_info(car_doc: CarDocs) -> dict[str, Any]:
       formatted.append(item_dict)
     return formatted
 
-  model_years = car_doc.model + (" " + car_doc.years if car_doc.years else "")
-  buy_link = f"https://comma.ai/shop/comma-3x.html?make={car_doc.make}&model={model_years}"
+  buy_link = f"https://comma.ai/shop/comma-3x?harness={car_doc.name}"
 
   parts_display = "\n".join([f"- {parts_list.count(part)} {part.value.name}" for part in sorted(set(parts_list), key=lambda p: str(p.value.name))])
 
