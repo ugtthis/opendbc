@@ -19,9 +19,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     if car_doc.name.lower() == "comma body" and min_steer_speed == float("-inf"):
       min_steer_speed = None
     
-    center_to_front = 0.
-    if hasattr(CP, 'centerToFront') and hasattr(CP, 'wheelbase') and CP.wheelbase > 0:
-      center_to_front = CP.centerToFront / CP.wheelbase
+    center_to_front = CP.centerToFront / CP.wheelbase
     
     max_lateral_accel = getattr(CP, "maxLateralAccel", None)
     if isinstance(max_lateral_accel, float) and max_lateral_accel in [float("inf"), float("-inf")]:
