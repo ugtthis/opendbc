@@ -47,7 +47,6 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "radar_delay": CP.radarDelay,
       "wheel_speed_factor": CP.wheelSpeedFactor,
       "start_accel": CP.startAccel,
-      "min_enable_speed": CP.minEnableSpeed,
       "steer_actuator_delay": CP.steerActuatorDelay,
       "steer_ratio_rear": CP.steerRatioRear,
       "steer_limit_timer": CP.steerLimitTimer,
