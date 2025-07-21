@@ -19,8 +19,6 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     if car_doc.name.lower() == "comma body" and min_steer_speed == float("-inf"):
       min_steer_speed = None
     
-    center_to_front = CP.centerToFront / CP.wheelbase
-    
     max_lateral_accel = getattr(CP, "maxLateralAccel", None)
     if isinstance(max_lateral_accel, float) and max_lateral_accel in [float("inf"), float("-inf")]:
       max_lateral_accel = None
@@ -87,7 +85,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "tire_stiffness_factor_base": platform.config.specs.tireStiffnessFactor,
       
       # Derived
-      "center_to_front_ratio": center_to_front,
+      "center_to_front_ratio": platform.config.specs.centerToFrontRatio,
       "max_lateral_accel": max_lateral_accel,
       "network_location": str(getattr(CP, "networkLocation", None)),
       "steer_control_type": str(getattr(CP, "steerControlType", None)),
