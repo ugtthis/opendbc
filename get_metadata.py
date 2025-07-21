@@ -93,12 +93,10 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "max_lateral_accel": max_lateral_accel,
       "network_location": str(getattr(CP, "networkLocation", None)),
       "steer_control_type": str(getattr(CP, "steerControlType", None)),
+      "buy_link": f"https://comma.ai/shop/comma-3x?harness={car_doc.name.replace(' ', '%20')}",
     }
     
     # Parts info
-    buy_link = f"https://comma.ai/shop/comma-3x?harness={car_doc.name.replace(' ', '%20')}"
-    data["buy_link"] = buy_link
-    
     if not car_doc.car_parts or not car_doc.car_parts.parts:
       data.update({
         "car_parts": [],
@@ -110,34 +108,24 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       })
     else:
       all_parts = car_doc.car_parts.all_parts()
-      parts_list = [p for p in all_parts if not isinstance(p, Tool)]
-      tools_list = [p for p in all_parts if isinstance(p, Tool)]
+      parts = [p for p in all_parts if not isinstance(p, Tool)]
+      tools = [p for p in all_parts if isinstance(p, Tool)]
       
-      # Format parts with inline counting
-      unique_parts = sorted(set(parts_list), key=lambda p: str(p.value.name))
-      detailed_parts = []
-      parts_lines = []
-      for part in unique_parts:
-        count = parts_list.count(part)
-        item_dict = {"count": count, "name": part.value.name, "enum_name": part.name}
-        if hasattr(part, "part_type"):
-          item_dict["type"] = part.part_type.name
-        detailed_parts.append(item_dict)
-        parts_lines.append(f"- {count} {part.value.name}")
+      # Build formatted data using unique items
+      unique_parts = sorted(set(parts), key=lambda p: str(p.value.name))
+      unique_tools = sorted(set(tools), key=lambda t: str(t.value.name))
       
-      # Format tools with inline counting
-      unique_tools = sorted(set(tools_list), key=lambda t: str(t.value.name))
-      tools_required = []
-      tools_lines = []
-      for tool in unique_tools:
-        count = tools_list.count(tool)
-        tools_required.append({"count": count, "name": tool.value.name, "enum_name": tool.name})
-        tools_lines.append(f"- {count} {tool.value.name}")
+      detailed_parts = [{"count": parts.count(p), "name": p.value.name, "enum_name": p.name,
+                        "type": p.part_type.name if hasattr(p, "part_type") else None}
+                       for p in unique_parts]
       
-      # Hardware display
-      hardware = f"Parts:\n" + "\n".join(parts_lines)
-      if tools_lines:
-        hardware += f"\n\nTools:\n" + "\n".join(tools_lines)
+      tools_required = [{"count": tools.count(t), "name": t.value.name, "enum_name": t.name}
+                       for t in unique_tools]
+      
+      # Hardware display string
+      parts_str = "\n".join([f"- {parts.count(p)} {p.value.name}" for p in unique_parts])
+      tools_str = "\n".join([f"- {tools.count(t)} {t.value.name}" for t in unique_tools])
+      hardware = f"Parts:\n{parts_str}" + (f"\n\nTools:\n{tools_str}" if tools else "")
       
       data.update({
         "car_parts": [p.value.name for p in car_doc.car_parts.parts],
@@ -162,9 +150,6 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       })
     
     return data
-    
-  except AttributeError as e:
-    raise RuntimeError(f"Error processing {car_doc.name}: {e}")
   except Exception as e:
     print(f"Error processing {car_doc.name}: {e}")
     return None
@@ -179,11 +164,10 @@ def main() -> None:
   cars_data = [data for car_doc in all_cars if (data := extract_car_data(car_doc)) is not None]
   cars_data.sort(key=lambda car: (car.get("make") or "", car.get("model") or ""))
   
-  output_file = "simplified_metadata.json"
-  with open(output_file, "w") as f:
+  with open("simplified_metadata.json", "w") as f:
     json.dump(cars_data, f, indent=2, ensure_ascii=False)
   
-  print(f"Generated {len(cars_data)} cars in {output_file}")
+  print(f"Generated {len(cars_data)} cars in simplified_metadata.json")
 
 
 if __name__ == "__main__":
