@@ -127,9 +127,9 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
         "car_parts": [p.value.name for p in car_doc.car_parts.parts],
         "harness": next((p.name.lower() for p in car_doc.car_parts.parts if isinstance(p.value, BaseCarHarness)), None),
         "has_angled_mount": any(p.name in ["angled_mount_8_degrees", "threex_angled_mount"] for p in all_parts),
-        "detailed_parts": detailed_parts,
         "tools_required": tools_required,
         "hardware": hardware,
+        "detailed_parts": detailed_parts,
       })
 
     return data
