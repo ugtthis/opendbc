@@ -11,18 +11,13 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     platform = PLATFORMS.get(car_doc.car_fingerprint)
     if not platform:
       return None
-    
+
     CP = get_params_for_docs(platform)
-    
-    # Handle special cases
-    min_steer_speed = car_doc.min_steer_speed
-    if car_doc.name.lower() == "comma body" and min_steer_speed == float("-inf"):
-      min_steer_speed = None
-    
-    max_lateral_accel = getattr(CP, "maxLateralAccel", None)
-    if isinstance(max_lateral_accel, float) and max_lateral_accel in [float("inf"), float("-inf")]:
-      max_lateral_accel = None
-    
+
+    # Handle special case from comma body
+    min_steer_speed = None if car_doc.min_steer_speed == float("-inf") else car_doc.min_steer_speed
+    max_lateral_accel = None if getattr(CP, "maxLateralAccel", None) == float("inf") else getattr(CP, "maxLateralAccel", None)
+
     # Build data dictionary
     data = {
       # Basic info
@@ -44,7 +39,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "detail_sentence": getattr(car_doc, "detail_sentence", None),
       "car_fingerprint": getattr(car_doc, "car_fingerprint", None),
       "brand": getattr(car_doc, "brand", None),
-      
+
       # CarParams
       "mass": CP.mass,
       "wheelbase": CP.wheelbase,
@@ -75,7 +70,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "vEgo_starting": CP.vEgoStarting,
       "stop_accel": CP.stopAccel,
       "longitudinal_actuator_delay": CP.longitudinalActuatorDelay,
-      
+
       # Platform Config
       "mass_curb_weight": platform.config.specs.mass,
       "center_to_front_ratio_base": platform.config.specs.centerToFrontRatio,
@@ -83,7 +78,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "min_steer_speed_base": platform.config.specs.minSteerSpeed,
       "min_enable_speed_base": platform.config.specs.minEnableSpeed,
       "tire_stiffness_factor_base": platform.config.specs.tireStiffnessFactor,
-      
+
       # Derived
       "center_to_front_ratio": platform.config.specs.centerToFrontRatio,
       "max_lateral_accel": max_lateral_accel,
@@ -91,7 +86,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "steer_control_type": str(getattr(CP, "steerControlType", None)),
       "buy_link": f"https://comma.ai/shop/comma-3x?harness={car_doc.name.replace(' ', '%20')}",
     }
-    
+
     # Parts info
     if not car_doc.car_parts or not car_doc.car_parts.parts:
       data.update({
@@ -106,23 +101,23 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       all_parts = car_doc.car_parts.all_parts()
       parts = [p for p in all_parts if not isinstance(p, Tool)]
       tools = [p for p in all_parts if isinstance(p, Tool)]
-      
+
       # Build formatted data using unique items
       unique_parts = sorted(set(parts), key=lambda p: str(p.value.name))
       unique_tools = sorted(set(tools), key=lambda t: str(t.value.name))
-      
+
       detailed_parts = [{"count": parts.count(p), "name": p.value.name, "enum_name": p.name,
                         "type": p.part_type.name if hasattr(p, "part_type") else None}
                        for p in unique_parts]
-      
+
       tools_required = [{"count": tools.count(t), "name": t.value.name, "enum_name": t.name}
                        for t in unique_tools]
-      
+
       # Hardware display string
       parts_str = "\n".join([f"- {parts.count(p)} {p.value.name}" for p in unique_parts])
       tools_str = "\n".join([f"- {tools.count(t)} {t.value.name}" for t in unique_tools])
       hardware = f"Parts:\n{parts_str}" + (f"\n\nTools:\n{tools_str}" if tools else "")
-      
+
       data.update({
         "car_parts": [p.value.name for p in car_doc.car_parts.parts],
         "harness": next((p.name.lower() for p in car_doc.car_parts.parts if isinstance(p.value, BaseCarHarness)), None),
@@ -131,10 +126,10 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
         "tools_required": tools_required,
         "hardware": hardware,
       })
-    
+
     # Row data
     if hasattr(car_doc, "row"):
-      row_data = {col.name.lower(): (col_val.value if hasattr(col_val, "value") else col_val) 
+      row_data = {col.name.lower(): (col_val.value if hasattr(col_val, "value") else col_val)
                   for col, col_val in car_doc.row.items()}
       data.update({
         "longitudinal": row_data.get("longitudinal"),
@@ -143,7 +138,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
         "steering_torque": row_data.get("steering_torque"),
         "auto_resume_star": row_data.get("auto_resume"),
       })
-    
+
     return data
   except Exception as e:
     print(f"Error processing {car_doc.name}: {e}")
@@ -155,13 +150,13 @@ def main() -> None:
   all_cars = [car_doc for car_doc in get_all_car_docs()
               if getattr(car_doc, "support_type", None) and car_doc.support_type.value not in excluded_types]
   print(f"Processing {len(all_cars)} supported cars...")
-  
+
   cars_data = [data for car_doc in all_cars if (data := extract_car_data(car_doc)) is not None]
   cars_data.sort(key=lambda car: (car.get("make") or "", car.get("model") or ""))
-  
+
   with open("simplified_metadata.json", "w") as f:
     json.dump(cars_data, f, indent=2, ensure_ascii=False)
-  
+
   print(f"Generated {len(cars_data)} cars in simplified_metadata.json")
 
 
