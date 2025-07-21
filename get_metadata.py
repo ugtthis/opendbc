@@ -147,10 +147,10 @@ def main() -> None:
   cars_data = [data for car_doc in all_cars if (data := extract_car_data(car_doc)) is not None]
   cars_data.sort(key=lambda car: (car.get("make") or "", car.get("model") or ""))
 
-  with open("simplified_metadata.json", "w") as f:
+  with open("metadata.json", "w") as f:
     json.dump(cars_data, f, indent=2, ensure_ascii=False)
 
-  print(f"Generated {len(cars_data)} cars in simplified_metadata.json")
+  print(f"Generated {len(cars_data)} cars in metadata.json")
 
 
 if __name__ == "__main__":
