@@ -54,8 +54,18 @@ def extract_basic_info(car_doc: CarDocs) -> dict[str, Any]:
 
 
 def extract_parts_info(car_doc: CarDocs) -> dict[str, Any]:
+  buy_link = f"https://comma.ai/shop/comma-3x?harness={car_doc.name.replace(' ', '%20')}"
+  
   if not car_doc.car_parts or not car_doc.car_parts.parts:
-    return {"car_parts": [], "harness": None, "has_angled_mount": False, "detailed_parts": [], "tools_required": [], "hardware": ""}
+    return {
+      "car_parts": [], 
+      "harness": None, 
+      "has_angled_mount": False, 
+      "detailed_parts": [], 
+      "tools_required": [], 
+      "hardware": "", 
+      "buy_link": buy_link
+    }
 
   all_parts = car_doc.car_parts.all_parts()
   parts_list = [p for p in all_parts if not isinstance(p, Tool)]
@@ -84,11 +94,9 @@ def extract_parts_info(car_doc: CarDocs) -> dict[str, Any]:
       formatted.append(item_dict)
     return formatted
 
-  buy_link = f"https://comma.ai/shop/comma-3x?harness={car_doc.name}"
-
   parts_display = "\n".join([f"- {parts_list.count(part)} {part.value.name}" for part in sorted(set(parts_list), key=lambda p: str(p.value.name))])
 
-  hardware = f"Parts:\n{parts_display}\nBuy: {buy_link}"
+  hardware = f"Parts:\n{parts_display}"
 
   if tools_list:
     tools_display = "\n".join([f"- {tools_list.count(tool)} {tool.value.name}" for tool in sorted(set(tools_list), key=lambda t: str(t.value.name))])
@@ -101,6 +109,7 @@ def extract_parts_info(car_doc: CarDocs) -> dict[str, Any]:
     "detailed_parts": format_items(parts_list, True),
     "tools_required": format_items(tools_list),
     "hardware": hardware,
+    "buy_link": buy_link,
   }
 
 
