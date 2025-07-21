@@ -146,7 +146,6 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
         "fsr_steering": row_data.get("fsr_steering", "0 mph"),
         "steering_torque": row_data.get("steering_torque"),
         "auto_resume_star": row_data.get("auto_resume"),
-        "video_row": row_data.get("video", ""),
       })
     
     return data
