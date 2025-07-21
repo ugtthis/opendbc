@@ -2,7 +2,7 @@
 import json
 from typing import Any
 from opendbc.car.docs import get_all_car_docs, get_params_for_docs
-from opendbc.car.docs_definitions import CarDocs, Tool, BaseCarHarness
+from opendbc.car.docs_definitions import CarDocs, Tool, BaseCarHarness, Column
 from opendbc.car.values import PLATFORMS
 
 
@@ -38,6 +38,13 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "detail_sentence": getattr(car_doc, "detail_sentence", None),
       "car_fingerprint": getattr(car_doc, "car_fingerprint", None),
       "brand": getattr(car_doc, "brand", None), # The parent company
+
+      # Capability info
+      "longitudinal": car_doc.row.get(Column.LONGITUDINAL),
+      "fsr_longitudinal": car_doc.row.get(Column.FSR_LONGITUDINAL, "0 mph"),
+      "fsr_steering": car_doc.row.get(Column.FSR_STEERING, "0 mph"),
+      "steering_torque": car_doc.row[Column.STEERING_TORQUE].value,
+      "auto_resume_star": "full" if car_doc.auto_resume else "empty",
 
       # CarParams
       "mass": CP.mass,
@@ -123,18 +130,6 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
         "detailed_parts": detailed_parts,
         "tools_required": tools_required,
         "hardware": hardware,
-      })
-
-    # Row data
-    if hasattr(car_doc, "row"):
-      row_data = {col.name.lower(): (col_val.value if hasattr(col_val, "value") else col_val)
-                  for col, col_val in car_doc.row.items()}
-      data.update({
-        "longitudinal": row_data.get("longitudinal"),
-        "fsr_longitudinal": row_data.get("fsr_longitudinal", "0 mph"),
-        "fsr_steering": row_data.get("fsr_steering", "0 mph"),
-        "steering_torque": row_data.get("steering_torque"),
-        "auto_resume_star": row_data.get("auto_resume"),
       })
 
     return data
