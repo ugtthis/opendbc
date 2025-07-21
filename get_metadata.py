@@ -18,7 +18,6 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     min_steer_speed = None if car_doc.min_steer_speed == float("-inf") else car_doc.min_steer_speed
     max_lateral_accel = None if getattr(CP, "maxLateralAccel", None) == float("inf") else getattr(CP, "maxLateralAccel", None)
 
-    # Build data dictionary
     data = {
       # Basic info
       "name": car_doc.name,
@@ -38,7 +37,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "support_link": car_doc.support_link,
       "detail_sentence": getattr(car_doc, "detail_sentence", None),
       "car_fingerprint": getattr(car_doc, "car_fingerprint", None),
-      "brand": getattr(car_doc, "brand", None),
+      "brand": getattr(car_doc, "brand", None), # The parent company
 
       # CarParams
       "mass": CP.mass,
