@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import os
+import sys
 from typing import Any
 from opendbc.car.docs import get_all_car_docs, get_params_for_docs
 from opendbc.car.docs_definitions import CarDocs, Tool, BaseCarHarness, Column
@@ -112,9 +113,13 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
 
 
 def main() -> None:
-  excluded_types = ["Not compatible", "Community"]
-  all_cars = [car_doc for car_doc in get_all_car_docs()
-              if getattr(car_doc, "support_type", None) and car_doc.support_type.value not in excluded_types]
+  upstream_only = "--upstream" in sys.argv
+  
+  all_cars = get_all_car_docs()
+  if upstream_only:
+    excluded_types = ["Not compatible", "Community"]
+    all_cars = [car for car in all_cars if getattr(car, "support_type", None) 
+                and car.support_type.value not in excluded_types]
 
   cars_data = [data for car_doc in all_cars if (data := extract_car_data(car_doc)) is not None]
   cars_data.sort(key=lambda car: (car.get("make") or "", car.get("model") or ""))
