@@ -34,7 +34,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "min_enable_speed": car_doc.min_enable_speed,
       "auto_resume": car_doc.auto_resume,
       "merged": car_doc.merged,
-      "support_type": car_doc.support_type.value if car_doc.support_type else None,
+      "support_type": car_doc.support_type.value,
       "support_link": car_doc.support_link,
       "detail_sentence": getattr(car_doc, "detail_sentence", None),
       "car_fingerprint": getattr(car_doc, "car_fingerprint", None),
@@ -115,8 +115,7 @@ if __name__ == "__main__":
   all_cars = get_all_car_docs()
   if upstream_only:
     excluded_types = ["Not compatible", "Community"]
-    all_cars = [car for car in all_cars if getattr(car, "support_type", None) 
-                and car.support_type.value not in excluded_types]
+    all_cars = [car for car in all_cars if car.support_type.value not in excluded_types]
 
   cars_data = [data for car_doc in all_cars if (data := extract_car_data(car_doc)) is not None]
   cars_data.sort(key=lambda car: (car.get("make") or "", car.get("model") or ""))
