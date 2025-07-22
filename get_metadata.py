@@ -95,7 +95,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     all_parts = car_doc.car_parts.all_parts() if car_doc.car_parts and car_doc.car_parts.parts else []
     parts = [p for p in all_parts if not isinstance(p, Tool)]
     tools = [p for p in all_parts if isinstance(p, Tool)]
-    
+
     data.update({
       "has_angled_mount": any(p.name in ["angled_mount_8_degrees", "threex_angled_mount"] for p in all_parts),
       "harness": next((p.name for p in all_parts if isinstance(p.value, BaseCarHarness)), None),
@@ -111,7 +111,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
 
 if __name__ == "__main__":
   upstream_only = "--upstream" in sys.argv
-  
+
   all_cars = get_all_car_docs()
   if upstream_only:
     excluded_types = ["Not compatible", "Community"]
