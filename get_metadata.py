@@ -8,7 +8,7 @@ from opendbc.car.docs_definitions import CarDocs, Tool, BaseCarHarness, Column
 from opendbc.car.values import PLATFORMS
 
 
-def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
+def extract_metadata(car_doc: CarDocs) -> dict[str, Any] | None:
   try:
     platform = PLATFORMS.get(car_doc.car_fingerprint)
     if not platform:
@@ -20,7 +20,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     min_steer_speed = None if car_doc.min_steer_speed == float("-inf") else car_doc.min_steer_speed
     max_lateral_accel = None if getattr(CP, "maxLateralAccel", None) == float("inf") else getattr(CP, "maxLateralAccel", None)
 
-    data = {
+    model_metadata = {
       "name": car_doc.name,
       "make": car_doc.make,
       "model": car_doc.model,
@@ -96,14 +96,14 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     parts = [p for p in all_parts if not isinstance(p, Tool)]
     tools = [p for p in all_parts if isinstance(p, Tool)]
 
-    data.update({
+    model_metadata.update({
       "has_angled_mount": any(p.name in ["angled_mount_8_degrees", "threex_angled_mount"] for p in all_parts),
       "harness": next((p.name for p in all_parts if isinstance(p.value, BaseCarHarness)), None),
       "tools_required": [{"name": t.value.name, "count": tools.count(t)} for t in dict.fromkeys(tools)],
       "parts": [{"name": p.value.name, "type": p.part_type.name, "count": parts.count(p)} for p in dict.fromkeys(parts)],
     })
 
-    return data
+    return model_metadata
   except Exception as e:
     print(f"Error processing {car_doc.name}: {e}")
     return None
@@ -117,11 +117,11 @@ if __name__ == "__main__":
     excluded_types = ["Not compatible", "Community"]
     all_cars = [car for car in all_cars if car.support_type.value not in excluded_types]
 
-  cars_data = [data for car_doc in all_cars if (data := extract_car_data(car_doc)) is not None]
-  cars_data.sort(key=lambda car: (car.get("make") or "", car.get("model") or ""))
+  metadata = [data for car_doc in all_cars if (data := extract_metadata(car_doc)) is not None]
+  metadata.sort(key=lambda car: (car.get("make") or "", car.get("model") or ""))
 
   filename = "metadata.json"
   with open(filename, "w") as f:
-    json.dump(cars_data, f, indent=2, ensure_ascii=False)
+    json.dump(metadata, f, indent=2, ensure_ascii=False)
 
-  print(f"Generated {len(cars_data)}/{len(all_cars)} cars and written to {os.path.abspath(filename)}")
+  print(f"Generated {len(metadata)}/{len(all_cars)} cars and written to {os.path.abspath(filename)}")
