@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 from typing import Any
 from opendbc.car.docs import get_all_car_docs, get_params_for_docs
 from opendbc.car.docs_definitions import CarDocs, Tool, BaseCarHarness, Column
@@ -114,15 +115,15 @@ def main() -> None:
   excluded_types = ["Not compatible", "Community"]
   all_cars = [car_doc for car_doc in get_all_car_docs()
               if getattr(car_doc, "support_type", None) and car_doc.support_type.value not in excluded_types]
-  print(f"Processing {len(all_cars)} supported cars...")
 
   cars_data = [data for car_doc in all_cars if (data := extract_car_data(car_doc)) is not None]
   cars_data.sort(key=lambda car: (car.get("make") or "", car.get("model") or ""))
 
-  with open("metadata.json", "w") as f:
+  filename = "metadata.json"
+  with open(filename, "w") as f:
     json.dump(cars_data, f, indent=2, ensure_ascii=False)
 
-  print(f"Generated {len(cars_data)} cars in metadata.json")
+  print(f"Generated {len(cars_data)}/{len(all_cars)} cars and written to {os.path.abspath(filename)}")
 
 
 if __name__ == "__main__":
