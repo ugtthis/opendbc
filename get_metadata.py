@@ -22,10 +22,10 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
 
     data = {
       "name": car_doc.name,
-      "make": getattr(car_doc, "make", None),
-      "model": getattr(car_doc, "model", None),
-      "years": getattr(car_doc, "years", None),
-      "year_list": getattr(car_doc, "year_list", []),
+      "make": car_doc.make,
+      "model": car_doc.model,
+      "years": car_doc.years,
+      "year_list": car_doc.year_list,
       "package": car_doc.package,
       "video": car_doc.video,
       "setup_video": car_doc.setup_video,
@@ -36,9 +36,9 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "merged": car_doc.merged,
       "support_type": car_doc.support_type.value,
       "support_link": car_doc.support_link,
-      "detail_sentence": getattr(car_doc, "detail_sentence", None),
-      "car_fingerprint": getattr(car_doc, "car_fingerprint", None),
-      "brand": getattr(car_doc, "brand", None), # The parent company
+      "detail_sentence": car_doc.detail_sentence,
+      "car_fingerprint": car_doc.car_fingerprint,
+      "brand": car_doc.brand, # The parent company
       "buy_link": f"https://comma.ai/shop/comma-3x?harness={car_doc.name.replace(' ', '%20')}",
 
       # Capability info
@@ -79,7 +79,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "longitudinal_actuator_delay": CP.longitudinalActuatorDelay,
       "max_lateral_accel": max_lateral_accel,
       "network_location": str(getattr(CP, "networkLocation", None)),
-      "steer_control_type": str(getattr(CP, "steerControlType", None)),
+      "steer_control_type": str(CP.steerControlType),
 
       # Platform Config
       "mass_curb_weight": platform.config.specs.mass,
