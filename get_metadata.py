@@ -16,12 +16,11 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
 
     CP = get_params_for_docs(platform)
 
-    # Handle special case from comma body
+    # Handle special cases from comma body
     min_steer_speed = None if car_doc.min_steer_speed == float("-inf") else car_doc.min_steer_speed
     max_lateral_accel = None if getattr(CP, "maxLateralAccel", None) == float("inf") else getattr(CP, "maxLateralAccel", None)
 
     data = {
-      # Basic info
       "name": car_doc.name,
       "make": getattr(car_doc, "make", None),
       "model": getattr(car_doc, "model", None),
@@ -49,7 +48,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "auto_resume_star": "full" if car_doc.auto_resume else "empty",
 
       # CarParams
-      "mass": CP.mass,
+      "mass": CP.mass, # Includes STD_CARGO_KG = 136
       "wheelbase": CP.wheelbase,
       "steer_ratio": CP.steerRatio,
       "radar_delay": CP.radarDelay,
