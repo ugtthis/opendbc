@@ -39,6 +39,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "detail_sentence": getattr(car_doc, "detail_sentence", None),
       "car_fingerprint": getattr(car_doc, "car_fingerprint", None),
       "brand": getattr(car_doc, "brand", None), # The parent company
+      "buy_link": f"https://comma.ai/shop/comma-3x?harness={car_doc.name.replace(' ', '%20')}",
 
       # Capability info
       "longitudinal": car_doc.row.get(Column.LONGITUDINAL),
@@ -76,6 +77,9 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "vEgo_starting": CP.vEgoStarting,
       "stop_accel": CP.stopAccel,
       "longitudinal_actuator_delay": CP.longitudinalActuatorDelay,
+      "max_lateral_accel": max_lateral_accel,
+      "network_location": str(getattr(CP, "networkLocation", None)),
+      "steer_control_type": str(getattr(CP, "steerControlType", None)),
 
       # Platform Config
       "mass_curb_weight": platform.config.specs.mass,
@@ -85,10 +89,6 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "min_enable_speed_base": platform.config.specs.minEnableSpeed,
       "tire_stiffness_factor_base": platform.config.specs.tireStiffnessFactor,
       "center_to_front_ratio": platform.config.specs.centerToFrontRatio,
-      "max_lateral_accel": max_lateral_accel,
-      "network_location": str(getattr(CP, "networkLocation", None)),
-      "steer_control_type": str(getattr(CP, "steerControlType", None)),
-      "buy_link": f"https://comma.ai/shop/comma-3x?harness={car_doc.name.replace(' ', '%20')}",
     }
 
     # Parts info
