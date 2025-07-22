@@ -93,44 +93,16 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     }
 
     # Parts info
-    if not car_doc.car_parts or not car_doc.car_parts.parts:
-      data.update({
-        "car_parts": [],
-        "harness": None,
-        "has_angled_mount": False,
-        "detailed_parts": [],
-        "tools_required": [],
-        "hardware": "",
-      })
-    else:
-      all_parts = car_doc.car_parts.all_parts()
-      parts = [p for p in all_parts if not isinstance(p, Tool)]
-      tools = [p for p in all_parts if isinstance(p, Tool)]
-
-      # Build formatted data using unique items
-      unique_parts = sorted(set(parts), key=lambda p: str(p.value.name))
-      unique_tools = sorted(set(tools), key=lambda t: str(t.value.name))
-
-      detailed_parts = [{"count": parts.count(p), "name": p.value.name, "enum_name": p.name,
-                        "type": p.part_type.name if hasattr(p, "part_type") else None}
-                       for p in unique_parts]
-
-      tools_required = [{"count": tools.count(t), "name": t.value.name, "enum_name": t.name}
-                       for t in unique_tools]
-
-      # Hardware display string
-      parts_str = "\n".join([f"- {parts.count(p)} {p.value.name}" for p in unique_parts])
-      tools_str = "\n".join([f"- {tools.count(t)} {t.value.name}" for t in unique_tools])
-      hardware = f"Parts:\n{parts_str}" + (f"\n\nTools:\n{tools_str}" if tools else "")
-
-      data.update({
-        "car_parts": [p.value.name for p in car_doc.car_parts.parts],
-        "harness": next((p.name.lower() for p in car_doc.car_parts.parts if isinstance(p.value, BaseCarHarness)), None),
-        "has_angled_mount": any(p.name in ["angled_mount_8_degrees", "threex_angled_mount"] for p in all_parts),
-        "tools_required": tools_required,
-        "hardware": hardware,
-        "detailed_parts": detailed_parts,
-      })
+    all_parts = car_doc.car_parts.all_parts() if car_doc.car_parts and car_doc.car_parts.parts else []
+    parts = [p for p in all_parts if not isinstance(p, Tool)]
+    tools = [p for p in all_parts if isinstance(p, Tool)]
+    
+    data.update({
+      "has_angled_mount": any(p.name in ["angled_mount_8_degrees", "threex_angled_mount"] for p in all_parts),
+      "harness": next((p.name for p in all_parts if isinstance(p.value, BaseCarHarness)), None),
+      "tools_required": [{"name": t.value.name, "count": tools.count(t)} for t in dict.fromkeys(tools)],
+      "parts": [{"name": p.value.name, "type": p.part_type.name, "count": parts.count(p)} for p in dict.fromkeys(parts)],
+    })
 
     return data
   except Exception as e:
