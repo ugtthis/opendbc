@@ -85,8 +85,6 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
       "min_steer_speed_base": platform.config.specs.minSteerSpeed,
       "min_enable_speed_base": platform.config.specs.minEnableSpeed,
       "tire_stiffness_factor_base": platform.config.specs.tireStiffnessFactor,
-
-      # Derived
       "center_to_front_ratio": platform.config.specs.centerToFrontRatio,
       "max_lateral_accel": max_lateral_accel,
       "network_location": str(getattr(CP, "networkLocation", None)),
