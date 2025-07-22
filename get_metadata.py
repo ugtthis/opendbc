@@ -112,7 +112,7 @@ def extract_car_data(car_doc: CarDocs) -> dict[str, Any] | None:
     return None
 
 
-def main() -> None:
+if __name__ == "__main__":
   upstream_only = "--upstream" in sys.argv
   
   all_cars = get_all_car_docs()
@@ -129,7 +129,3 @@ def main() -> None:
     json.dump(cars_data, f, indent=2, ensure_ascii=False)
 
   print(f"Generated {len(cars_data)}/{len(all_cars)} cars and written to {os.path.abspath(filename)}")
-
-
-if __name__ == "__main__":
-  main()
